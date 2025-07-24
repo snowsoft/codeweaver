@@ -71,3 +71,9 @@ func repeatChar(char string, n int) string {
     }
     return result
 }
+
+// UpdateText updates the spinner message
+func (s *SimpleSpinner) UpdateText(message string) {
+    s.message = message
+    fmt.Printf("⏳ %s\n", s.message)
+}
