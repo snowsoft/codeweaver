@@ -72,13 +72,13 @@ What would you like to do?
 
 #### Option 1: Go Install (Önerilen)
 ```bash
-go install github.com/snowsoft/weaver@latest
+go install github.com/snowsoft/codeweaver@latest
 ```
 
 #### Option 2: Kaynak Koddan Derleme
 ```bash
-git clone https://github.com/snowsoft/weaver.git
-cd weaver
+git clone https://github.com/snowsoft/codeweaver.git
+cd codeweaver
 go build -o weaver .
 sudo mv weaver /usr/local/bin/
 ```
@@ -86,12 +86,12 @@ sudo mv weaver /usr/local/bin/
 #### Option 3: Pre-built Binary İndir
 ```bash
 # Linux (amd64)
-wget https://github.com/snowsoft/weaver/releases/latest/download/weaver-linux-amd64
+wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-linux-amd64
 chmod +x weaver-linux-amd64
 sudo mv weaver-linux-amd64 /usr/local/bin/weaver
 
 # macOS (arm64)
-wget https://github.com/snowsoft/weaver/releases/latest/download/weaver-darwin-arm64
+wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-darwin-arm64
 chmod +x weaver-darwin-arm64
 sudo mv weaver-darwin-arm64 /usr/local/bin/weaver
 
@@ -282,8 +282,8 @@ Katkılarınızı bekliyoruz! Lütfen [CONTRIBUTING.md](CONTRIBUTING.md) dosyas�
 
 ```bash
 # Fork ve clone
-git clone https://github.com/YOUR_USERNAME/weaver.git
-cd weaver
+git clone https://github.com/YOUR_USERNAME/codeweaver.git
+cd codeweaver
 
 # Branch oluştur
 git checkout -b feature/amazing-feature
@@ -348,9 +348,9 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 ## 📞 İletişim
 
-- **GitHub Issues**: [Sorun Bildir](https://github.com/snowsoft/weaver/issues)
-- **Discussions**: [Tartışmalar](https://github.com/snowsoft/weaver/discussions)
-- **Email**: kadir@nlksoft.com
+- **GitHub Issues**: [Sorun Bildir](https://github.com/snowsoft/codeweaver/issues)
+- **Discussions**: [Tartışmalar](https://github.com/snowsoft/codeweaver/discussions)
+- **Email**: info@snowsoft.com
 
 ---
 

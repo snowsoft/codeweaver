@@ -8,10 +8,10 @@ import (
     
     "github.com/pterm/pterm"
     "github.com/spf13/cobra"
-    "github.com/snowsoft/weaver/internal/diff"
-    "github.com/snowsoft/weaver/internal/ollama"
-    "github.com/snowsoft/weaver/internal/ui"
-    "github.com/snowsoft/weaver/internal/utils"
+    "github.com/snowsoft/codeweaver/internal/diff"
+    "github.com/snowsoft/codeweaver/internal/ollama"
+    "github.com/snowsoft/codeweaver/internal/ui"
+    "github.com/snowsoft/codeweaver/internal/utils"
 )
 
 var (

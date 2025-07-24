@@ -5,7 +5,7 @@ import (
     "fmt"
     "os"
     
-    "github.com/snowsoft/weaver/cmd"
+    "github.com/snowsoft/codeweaver/cmd"
 )
 
 func main() {

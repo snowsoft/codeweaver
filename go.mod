@@ -1,4 +1,4 @@
-module github.com/snowsoft/weaver
+module github.com/snowsoft/codeweaver
 
 go 1.21
 
