@@ -1,0 +1,20 @@
+#!/bin/bash
+# Update to latest pterm to fix conflicts
+
+echo "Updating to latest pterm..."
+
+# Get latest pterm
+go get -u github.com/pterm/pterm@latest
+
+# This should get compatible atomicgo packages
+go mod tidy
+
+# Show the versions
+echo "Current pterm version:"
+go list -m github.com/pterm/pterm
+
+echo "Current atomicgo versions:"
+go list -m all | grep atomicgo
+
+# Test build
+go build -v .
