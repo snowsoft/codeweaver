@@ -30,35 +30,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       
-      - name: Fix Go modules
+      - name: Setup Go modules
         run: |
-          # Clean module cache to avoid conflicts
-          go clean -modcache || true
+          # Create a clean go.mod without pterm
+          cat > go.mod << 'EOF'
+          module github.com/snowsoft/codeweaver
           
-          # Remove potentially conflicting entries
-          go mod edit -droprequire github.com/atomicgo/cursor || true
-          go mod edit -droprequire github.com/atomicgo/keyboard || true
-          go mod edit -droprequire github.com/atomicgo/schedule || true
+          go 1.21
           
-          # Download dependencies fresh
-          go mod download || true
+          require (
+              github.com/AlecAivazis/survey/v2 v2.3.7
+              github.com/fatih/color v1.16.0
+              github.com/schollz/progressbar/v3 v3.14.1
+              github.com/sergi/go-diff v1.3.1
+              github.com/spf13/cobra v1.8.0
+              github.com/spf13/viper v1.18.2
+              gopkg.in/yaml.v3 v3.0.1
+          )
+          EOF
           
-          # If download fails, try alternative approach
-          if [ $? -ne 0 ]; then
-            echo "Trying alternative module resolution..."
-            # Remove go.sum to force fresh resolution
-            rm -f go.sum
-            # Try to get each dependency individually
-            go get github.com/spf13/cobra@v1.8.0
-            go get github.com/spf13/viper@v1.18.2
-            go get github.com/pterm/pterm@latest
-            go get github.com/sergi/go-diff@v1.3.1
-            go get github.com/AlecAivazis/survey/v2@v2.3.7
-            go get gopkg.in/yaml.v3@v3.0.1
-          fi
-          
-          # Final tidy
-          go mod tidy || true
+          # Download dependencies
+          go mod download
+          go mod tidy
           
       - name: Download dependencies
         run: |
