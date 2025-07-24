@@ -18,9 +18,9 @@ func ReadFile(path string) (string, error) {
     return string(content), nil
 }
 
-// WriteFile writes content to a file
+// WriteFile writes content to a file with secure permissions
 func WriteFile(path string, content string) error {
-    return os.WriteFile(path, []byte(content), 0644)
+    return os.WriteFile(path, []byte(content), 0600)
 }
 
 // FileExists checks if a file exists
@@ -103,7 +103,10 @@ func GetDirectoryTree(root string, maxDepth int) (string, error) {
         }
         
         // Calculate depth
-        relPath, _ := filepath.Rel(root, path)
+        relPath, err := filepath.Rel(root, path)
+        if err != nil {
+            return err
+        }
         depth := strings.Count(relPath, string(filepath.Separator))
         
         // Skip if too deep

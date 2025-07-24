@@ -42,7 +42,11 @@ func runNew(cmd *cobra.Command, args []string) error {
     fileName := args[0]
     
     // Create spinner
-    spinner, _ := pterm.DefaultSpinner.Start("Generating code...")
+    spinner, err := pterm.DefaultSpinner.Start("Generating code...")
+    if err != nil {
+        // Continue without spinner
+        pterm.Warning.Println("Failed to start spinner")
+    }
     
     // Initialize Ollama client
     client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)

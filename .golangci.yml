@@ -18,12 +18,6 @@ linters-settings:
     check-type-assertions: true
     check-blank: true
   
-  gosimple:
-    go: "1.21"
-  
-  staticcheck:
-    go: "1.21"
-  
   gofmt:
     simplify: true
   
@@ -40,11 +34,14 @@ issues:
 
 run:
   timeout: 5m
-  skip-dirs:
+  go: "1.21"
+
+issues:
+  exclude-dirs:
     - vendor
     - installer
 
 output:
-  format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
+  formats:
+    - format: colored-line-number
+    - format: github-actions

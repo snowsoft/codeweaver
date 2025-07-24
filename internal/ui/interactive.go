@@ -121,9 +121,16 @@ func OpenEditor(content string) (string, error) {
 
 // ShowProgress displays a progress bar
 func ShowProgress(title string, total int) *pterm.ProgressbarPrinter {
-    bar, _ := pterm.DefaultProgressbar.
+    bar, err := pterm.DefaultProgressbar.
         WithTotal(total).
         WithTitle(title).
         Start()
+    if err != nil {
+        // Fallback to basic spinner if progress bar fails
+        spinner, _ := pterm.DefaultSpinner.Start(title)
+        return &pterm.ProgressbarPrinter{
+            Writer: spinner.Writer,
+        }
+    }
     return bar
 }

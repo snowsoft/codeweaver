@@ -81,7 +81,10 @@ func (c *Client) Generate(ctx context.Context, prompt string) (string, error) {
     defer resp.Body.Close()
     
     if resp.StatusCode != http.StatusOK {
-        body, _ := io.ReadAll(resp.Body)
+        body, err := io.ReadAll(resp.Body)
+        if err != nil {
+            return "", fmt.Errorf("API returned status %d and failed to read body: %w", resp.StatusCode, err)
+        }
         return "", fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
     }
     
@@ -109,9 +112,7 @@ func cleanResponse(response string) string {
     }
     
     // Remove closing code block
-    if strings.HasSuffix(response, "```") {
-        response = strings.TrimSuffix(response, "```")
-    }
+    response = strings.TrimSuffix(response, "```")
     
     return strings.TrimSpace(response)
 }

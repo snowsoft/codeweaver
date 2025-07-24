@@ -49,7 +49,11 @@ func runRefactor(cmd *cobra.Command, args []string) error {
     }
     
     // Create spinner
-    spinner, _ := pterm.DefaultSpinner.Start("Analyzing code...")
+    spinner, err := pterm.DefaultSpinner.Start("Analyzing code...")
+    if err != nil {
+        // Continue without spinner
+        pterm.Warning.Println("Failed to start spinner")
+    }
     
     // Read original file
     originalCode, err := utils.ReadFile(fileName)

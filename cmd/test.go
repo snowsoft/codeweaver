@@ -213,7 +213,7 @@ func getDefaultTestFramework(language string) string {
     }
 }
 
-func showTestingInstructions(language, framework, testFile string) {
+func showTestingInstructions(_ string, framework, testFile string) {
     pterm.DefaultSection.Println("Next Steps")
     
     instructions := map[string]map[string]string{
