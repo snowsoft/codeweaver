@@ -2,9 +2,7 @@ package cmd
 
 import (
     "fmt"
-    "os"
     "path/filepath"
-    "strings"
     
     "github.com/pterm/pterm"
     "github.com/spf13/cobra"
