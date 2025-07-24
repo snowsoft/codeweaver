@@ -48,5 +48,4 @@ require (
     gopkg.in/ini.v1 v1.67.0 // indirect
 )
 
-
-replace github.com/atomicgo/cursor => atomicgo.dev/cursor v0.2.0
+ 
