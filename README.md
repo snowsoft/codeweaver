@@ -470,7 +470,7 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 - **GitHub Issues**: [Sorun Bildir](https://github.com/snowsoft/codeweaver/issues)
 - **Discussions**: [Tartışmalar](https://github.com/snowsoft/codeweaver/discussions)
-- **Email**: info@snowsoft.com
+ 
 
 ---
 
