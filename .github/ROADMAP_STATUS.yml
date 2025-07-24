@@ -1,0 +1,6 @@
+name: Update Roadmap Status
+on:
+  issues:
+    types: [closed, reopened]
+  schedule:
+    - cron: '0 0 * * 0' # Haftalık
