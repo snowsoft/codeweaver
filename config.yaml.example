@@ -38,3 +38,7 @@ languages:
   php:
     test_framework: "phpunit"
     doc_style: "phpdoc"
+models:
+  fast: codellama:7b        # Hızlı, küçük model
+  balanced: codellama:13b   # Dengeli
+  quality: codellama:34b    # Kaliteli ama yavaş

@@ -23,6 +23,7 @@ var (
 	model       string
 	temperature float64
 	maxTokens   int
+	stream      bool
 )
 
 // NewCmd represents the new command
@@ -48,6 +49,7 @@ func init() {
 	NewCmd.Flags().StringVar(&model, "model", "", "Specific model to use")
 	NewCmd.Flags().Float64Var(&temperature, "temperature", 0.7, "Generation temperature (0.0-1.0)")
 	NewCmd.Flags().IntVar(&maxTokens, "max-tokens", 2000, "Maximum tokens to generate")
+	NewCmd.Flags().BoolVar(&stream, "stream", true, "Stream output as it's generated")
 	
 	NewCmd.MarkFlagRequired("task")
 }
@@ -109,33 +111,70 @@ func runNew(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("ollama connection failed: %w", err)
 	}
 	
-	spinner.UpdateText("Generating code...")
-	
 	// Build prompt
-	prompt := buildPrompt(filename, task, contextContent)
+	promptText := buildPrompt(filename, task, contextContent)
 	
 	// Generate code
 	req := ai.GenerateRequest{
-		Prompt:      prompt,
+		Prompt:      promptText,
 		Model:       model,
 		Temperature: temperature,
 		MaxTokens:   maxTokens,
 		Context:     contextContent,
 	}
 	
-	resp, err := client.Generate(ctx, req)
-	if err != nil {
-		spinner.Fail("Code generation failed")
-		return fmt.Errorf("generation failed: %w", err)
+	var resp *ai.GenerateResponse
+	var generatedContent string
+	
+	if stream {
+		// Streaming generation
+		spinner.Stop()
+		pterm.DefaultSection.Println("Generating Code")
+		
+		streamCh, err := client.GenerateStream(ctx, req)
+		if err != nil {
+			return fmt.Errorf("generation failed: %w", err)
+		}
+		
+		var fullContent strings.Builder
+		for chunk := range streamCh {
+			if chunk.Error != nil {
+				return fmt.Errorf("stream error: %w", chunk.Error)
+			}
+			fmt.Print(chunk.Content)
+			fullContent.WriteString(chunk.Content)
+		}
+		fmt.Println() // New line after streaming
+		
+		generatedContent = fullContent.String()
+		resp = &ai.GenerateResponse{
+			Content:  generatedContent,
+			Model:    req.Model,
+			Provider: ai.ProviderOllama,
+		}
+	} else {
+		// Non-streaming generation
+		spinner.UpdateText("Generating code...")
+		
+		var err error
+		resp, err = client.Generate(ctx, req)
+		if err != nil {
+			spinner.Fail("Code generation failed")
+			return fmt.Errorf("generation failed: %w", err)
+		}
+		
+		spinner.Success("Code generated successfully!")
+		generatedContent = resp.Content
 	}
 	
-	spinner.Success("Code generated successfully!")
-	
-	// Display generated code
-	pterm.DefaultSection.Println("Generated Code")
-	pterm.DefaultBox.Println(resp.Content)
+	// Display generated code (if not streaming)
+	if !stream {
+		pterm.DefaultSection.Println("Generated Code")
+		pterm.DefaultBox.Println(generatedContent)
+	}
 	
 	// Ask for confirmation
+	fmt.Println() // Add spacing
 	saveChoice := ""
 	prompt2 := &survey.Select{
 		Message: "What would you like to do?",
@@ -153,7 +192,7 @@ func runNew(cmd *cobra.Command, args []string) error {
 		}
 		
 		// Save file
-		err = os.WriteFile(filename, []byte(resp.Content), 0644)
+		err := os.WriteFile(filename, []byte(generatedContent), 0644)
 		if err != nil {
 			return fmt.Errorf("failed to save file: %w", err)
 		}
@@ -162,6 +201,7 @@ func runNew(cmd *cobra.Command, args []string) error {
 	case "Edit":
 		// TODO: Implement editor integration
 		pterm.Info.Println("Edit functionality coming soon!")
+		pterm.Info.Println("For now, the generated code has been displayed above.")
 		
 	case "Regenerate":
 		// Recursively call the command
@@ -199,38 +239,44 @@ Requirements:
 		prompt += "\nContext:\n" + strings.Join(context, "\n\n")
 	}
 	
+	prompt += "\nGenerated code:"
+	
 	return prompt
 }
 
 func getLanguageFromExt(ext string) string {
 	languages := map[string]string{
-		"py":   "Python",
-		"js":   "JavaScript",
-		"ts":   "TypeScript",
-		"jsx":  "React JavaScript",
-		"tsx":  "React TypeScript",
-		"go":   "Go",
-		"java": "Java",
-		"cpp":  "C++",
-		"c":    "C",
-		"cs":   "C#",
-		"php":  "PHP",
-		"rb":   "Ruby",
-		"rs":   "Rust",
+		"py":    "Python",
+		"js":    "JavaScript",
+		"ts":    "TypeScript",
+		"jsx":   "React JavaScript",
+		"tsx":   "React TypeScript",
+		"go":    "Go",
+		"java":  "Java",
+		"cpp":   "C++",
+		"c":     "C",
+		"cs":    "C#",
+		"php":   "PHP",
+		"rb":    "Ruby",
+		"rs":    "Rust",
 		"swift": "Swift",
-		"kt":   "Kotlin",
-		"dart": "Dart",
-		"vue":  "Vue",
-		"html": "HTML",
-		"css":  "CSS",
-		"scss": "SCSS",
-		"sql":  "SQL",
-		"sh":   "Shell",
-		"yml":  "YAML",
-		"yaml": "YAML",
-		"json": "JSON",
-		"xml":  "XML",
-		"md":   "Markdown",
+		"kt":    "Kotlin",
+		"dart":  "Dart",
+		"vue":   "Vue",
+		"html":  "HTML",
+		"css":   "CSS",
+		"scss":  "SCSS",
+		"sql":   "SQL",
+		"sh":    "Shell",
+		"bash":  "Bash",
+		"ps1":   "PowerShell",
+		"bat":   "Batch",
+		"yml":   "YAML",
+		"yaml":  "YAML",
+		"json":  "JSON",
+		"xml":   "XML",
+		"md":    "Markdown",
+		"txt":   "Text",
 	}
 	
 	if lang, ok := languages[ext]; ok {

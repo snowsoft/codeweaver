@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -44,11 +45,25 @@ type ProjectPlan struct {
 	Commands    []string       `json:"setup_commands,omitempty"`
 }
 
+type FileResult struct {
+	Path    string
+	Success bool
+	Error   error
+}
+
+var (
+	parallel     int
+	noStream     bool
+	skipConfirm  bool
+)
+
 func init() {
 	CreateCmd.Flags().StringVar(&provider, "provider", "ollama", "AI provider")
 	CreateCmd.Flags().StringVar(&model, "model", "", "Specific model to use")
 	CreateCmd.Flags().Float64Var(&temperature, "temperature", 0.7, "Generation temperature")
-	CreateCmd.Flags().BoolP("yes", "y", false, "Skip confirmation prompts")
+	CreateCmd.Flags().BoolVarP(&skipConfirm, "yes", "y", false, "Skip confirmation prompts")
+	CreateCmd.Flags().IntVarP(&parallel, "parallel", "p", 3, "Number of files to generate in parallel")
+	CreateCmd.Flags().BoolVar(&noStream, "no-stream", false, "Disable streaming output")
 }
 
 func runCreate(cmd *cobra.Command, args []string) error {
@@ -124,7 +139,6 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	displayProjectPlan(&plan)
 	
 	// Ask for confirmation (unless -y flag is set)
-	skipConfirm, _ := cmd.Flags().GetBool("yes")
 	if !skipConfirm {
 		confirm := false
 		prompt := &survey.Confirm{
@@ -139,48 +153,64 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		}
 	}
 	
-	// Create each file
+	// Create each file with parallel processing
 	pterm.DefaultSection.Println("Creating Files")
 	
-	successCount := 0
-	for _, file := range plan.Files {
-		spinner, _ := pterm.DefaultSpinner.Start(fmt.Sprintf("Creating %s...", file.Path))
-		
-		// Generate file content
-		filePrompt := buildFilePrompt(file, plan)
-		
-		req := ai.GenerateRequest{
-			Prompt:      filePrompt,
-			Model:       config.Model,
-			Temperature: temperature,
-			MaxTokens:   3000,
-		}
-		
-		resp, err := client.Generate(ctx, req)
-		if err != nil {
-			spinner.Fail(fmt.Sprintf("Failed to create %s: %v", file.Path, err))
-			continue
-		}
-		
-		// Create directory if needed
-		dir := filepath.Dir(file.Path)
-		if dir != "." && dir != "" {
-			os.MkdirAll(dir, 0755)
-		}
-		
-		// Write file
-		if err := os.WriteFile(file.Path, []byte(resp.Content), 0644); err != nil {
-			spinner.Fail(fmt.Sprintf("Failed to write %s: %v", file.Path, err))
-			continue
-		}
-		
-		spinner.Success(fmt.Sprintf("Created %s", file.Path))
-		successCount++
+	// Progress bar
+	progressbar, _ := pterm.DefaultProgressbar.
+		WithTotal(len(plan.Files)).
+		WithTitle("Creating files").
+		WithShowElapsedTime().
+		Start()
+	
+	// Create channels for work distribution
+	jobs := make(chan FileToCreate, len(plan.Files))
+	results := make(chan FileResult, len(plan.Files))
+	
+	// Start workers
+	var wg sync.WaitGroup
+	for w := 0; w < parallel; w++ {
+		wg.Add(1)
+		go fileWorker(w, client, config, plan, jobs, results, &wg, progressbar)
 	}
+	
+	// Send jobs
+	for _, file := range plan.Files {
+		jobs <- file
+	}
+	close(jobs)
+	
+	// Wait for all workers to complete
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+	
+	// Collect results
+	successCount := 0
+	var failures []FileResult
+	
+	for result := range results {
+		if result.Success {
+			successCount++
+		} else {
+			failures = append(failures, result)
+		}
+	}
+	
+	progressbar.Stop()
 	
 	// Summary
 	pterm.DefaultSection.Println("Summary")
 	pterm.Success.Printf("Successfully created %d/%d files\n", successCount, len(plan.Files))
+	
+	// Show failures if any
+	if len(failures) > 0 {
+		pterm.Warning.Println("\nFailed files:")
+		for _, fail := range failures {
+			pterm.Error.Printf("  • %s: %v\n", fail.Path, fail.Error)
+		}
+	}
 	
 	// Show setup commands if any
 	if len(plan.Commands) > 0 {
@@ -192,6 +222,94 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	}
 	
 	return nil
+}
+
+func fileWorker(id int, client *ollama.Client, config ai.Config, plan ProjectPlan,
+	jobs <-chan FileToCreate, results chan<- FileResult, wg *sync.WaitGroup, 
+	progressbar *pterm.ProgressbarPrinter) {
+	
+	defer wg.Done()
+	ctx := context.Background()
+	
+	for file := range jobs {
+		// Update progress bar title
+		progressbar.UpdateTitle(fmt.Sprintf("Worker %d: Creating %s", id+1, file.Path))
+		
+		// Generate file content
+		filePrompt := buildFilePrompt(file, plan)
+		
+		req := ai.GenerateRequest{
+			Prompt:      filePrompt,
+			Model:       config.Model,
+			Temperature: temperature,
+			MaxTokens:   3000,
+		}
+		
+		// Generate content
+		var content string
+		var err error
+		
+		if !noStream && id == 0 { // Only first worker streams to avoid confusion
+			// Show which file is being streamed
+			pterm.FgCyan.Printf("\n[Streaming] %s:\n", file.Path)
+			
+			streamCh, err := client.GenerateStream(ctx, req)
+			if err == nil {
+				var fullContent strings.Builder
+				for chunk := range streamCh {
+					if chunk.Error != nil {
+						err = chunk.Error
+						break
+					}
+					fmt.Print(chunk.Content)
+					fullContent.WriteString(chunk.Content)
+				}
+				content = fullContent.String()
+				fmt.Println() // New line after streaming
+			}
+		} else {
+			// Non-streaming generation for other workers
+			resp, genErr := client.Generate(ctx, req)
+			if genErr == nil {
+				content = resp.Content
+			} else {
+				err = genErr
+			}
+		}
+		
+		if err != nil {
+			results <- FileResult{
+				Path:    file.Path,
+				Success: false,
+				Error:   err,
+			}
+			progressbar.Increment()
+			continue
+		}
+		
+		// Create directory if needed
+		dir := filepath.Dir(file.Path)
+		if dir != "." && dir != "" {
+			os.MkdirAll(dir, 0755)
+		}
+		
+		// Write file
+		if err := os.WriteFile(file.Path, []byte(content), 0644); err != nil {
+			results <- FileResult{
+				Path:    file.Path,
+				Success: false,
+				Error:   err,
+			}
+		} else {
+			results <- FileResult{
+				Path:    file.Path,
+				Success: true,
+				Error:   nil,
+			}
+		}
+		
+		progressbar.Increment()
+	}
 }
 
 func buildPlanPrompt(task string) string {
@@ -315,6 +433,7 @@ func getFileIcon(filename string) string {
 		".txt":  "📄",
 		".sh":   "🖥️",
 		".bat":  "🖥️",
+		".ps1":  "💻",
 	}
 	
 	if icon, ok := icons[ext]; ok {

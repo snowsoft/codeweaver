@@ -47,6 +47,8 @@ func init() {
 	rootCmd.AddCommand(cmd.NewCmd)
 	rootCmd.AddCommand(cmd.RefactorCmd)
 	rootCmd.AddCommand(cmd.CreateCmd)
+    rootCmd.AddCommand(cmd.TemplateCmd) 
+
 }
 
 func initConfig() {
