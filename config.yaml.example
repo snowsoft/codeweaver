@@ -1,0 +1,40 @@
+# Weaver Configuration File
+# Copy this file to ~/.config/weaver/config.yaml and customize
+
+# Ollama API Configuration
+ollama:
+  api_url: "http://localhost:11434"
+  model: "codellama:13b-instruct"
+  temperature: 0.7
+  max_tokens: 4096
+  timeout: 120s
+
+# UI Configuration
+ui:
+  theme: "dark"
+  show_spinner: true
+  diff_colors:
+    added: "green"
+    removed: "red"
+    modified: "yellow"
+
+# Default Settings
+defaults:
+  context_depth: 3  # Number of directory levels to include in context
+  auto_backup: true # Create backup before modifying files
+  backup_dir: ".weaver_backups"
+
+# Language-specific settings
+languages:
+  python:
+    test_framework: "pytest"
+    doc_style: "google"
+  javascript:
+    test_framework: "jest"
+    doc_style: "jsdoc"
+  go:
+    test_framework: "testing"
+    doc_style: "godoc"
+  php:
+    test_framework: "phpunit"
+    doc_style: "phpdoc"
