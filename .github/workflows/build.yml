@@ -59,8 +59,15 @@ jobs:
       
       - name: Format code
         run: |
-          # Format all Go files
+          # Install goimports
+          go install golang.org/x/tools/cmd/goimports@latest
+          
+          # Format all Go files with goimports
+          goimports -w -local github.com/snowsoft/codeweaver .
+          
+          # Also run gofmt
           gofmt -w .
+          
           # Show if any files were changed
           git diff --exit-code || echo "Files were formatted"
       
