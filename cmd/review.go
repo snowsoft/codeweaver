@@ -6,8 +6,9 @@ import (
     
     "github.com/pterm/pterm"
     "github.com/spf13/cobra"
-    "github.com/yourusername/weaver/internal/ollama"
-    "github.com/yourusername/weaver/internal/utils"
+    "github.com/snowsoft/codeweaver/internal/ollama"
+    "github.com/snowsoft/codeweaver/internal/ui"
+    "github.com/snowsoft/codeweaver/internal/utils"
 )
 
 var reviewTask string
@@ -139,7 +140,7 @@ func displayReview(fileName string, review string) {
             lines := strings.Split(section, "\n")
             for _, line := range lines {
                 if strings.TrimSpace(line) != "" {
-                    pterm.DefaultBulletList.WithBullet("•").Println(strings.TrimLeft(line, "-* "))
+                    pterm.DefaultBasicText.WithStyle(pterm.NewStyle(pterm.FgDefault)).Println("• " + strings.TrimLeft(line, "-* "))
                 }
             }
         } else {

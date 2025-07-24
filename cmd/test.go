@@ -2,14 +2,15 @@ package cmd
 
 import (
     "fmt"
+    "os"
     "path/filepath"
     "strings"
     
     "github.com/pterm/pterm"
     "github.com/spf13/cobra"
-    "github.com/yourusername/weaver/internal/ollama"
-    "github.com/yourusername/weaver/internal/ui"
-    "github.com/yourusername/weaver/internal/utils"
+    "github.com/snowsoft/codeweaver/internal/ollama"
+    "github.com/snowsoft/codeweaver/internal/ui"
+    "github.com/snowsoft/codeweaver/internal/utils"
 )
 
 var testFramework string
