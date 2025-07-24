@@ -2,6 +2,7 @@ package cmd
 
 import (
     "fmt"
+    "os"
     "path/filepath"
     
     "github.com/pterm/pterm"
