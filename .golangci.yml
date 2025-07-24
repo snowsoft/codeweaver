@@ -42,4 +42,3 @@ run:
 output:
   formats:
     - format: colored-line-number
-    - format: github-actions
