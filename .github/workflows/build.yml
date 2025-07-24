@@ -32,8 +32,13 @@ jobs:
       
       - name: Download dependencies
         run: |
+          # Clean module cache for this project
+          go clean -modcache || true
+          # Download fresh dependencies
           go mod download
           go mod tidy
+          # Verify
+          go mod verify
       
       - name: Run tests
         run: go test -v ./...
