@@ -134,7 +134,8 @@ cp config.yaml.example ~/.config/weaver/config.yaml
 ```
 
 #### Sorun Giderme - Kurulum
-Eğer `missing go.sum entry` hatası alırsanız:
+
+**`missing go.sum entry` hatası:**
 ```bash
 # Bağımlılıkları manuel olarak ekleyin
 go get github.com/spf13/cobra@v1.8.0
@@ -146,6 +147,17 @@ go get gopkg.in/yaml.v3@v3.0.1
 
 # go.sum dosyasını yeniden oluştur
 go mod tidy
+```
+
+**Windows'ta `GOPROXY` hatası:**
+```batch
+# GOPROXY ayarını düzelt
+go env -w GOPROXY=https://proxy.golang.org,direct
+go env -w GOSUMDB=sum.golang.org
+go env -w GO111MODULE=on
+
+# veya fix-goproxy.bat dosyasını çalıştır
+fix-goproxy.bat
 ```
 
 #### Option 3: Pre-built Binary İndir

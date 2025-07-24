@@ -48,6 +48,18 @@ if exist go.mod del /f go.mod
 if exist go.sum del /f go.sum
 if exist weaver.exe del /f weaver.exe
 
+:: Fix GOPROXY if needed
+echo Checking Go proxy settings...
+for /f "tokens=*" %%i in ('go env GOPROXY') do set CURRENT_PROXY=%%i
+if "%CURRENT_PROXY%"=="" (
+    echo Setting default GOPROXY...
+    go env -w GOPROXY=https://proxy.golang.org,direct
+)
+if "%CURRENT_PROXY%"=="""""" (
+    echo Setting default GOPROXY...
+    go env -w GOPROXY=https://proxy.golang.org,direct
+)
+
 :: Initialize module
 echo Initializing Go module...
 go mod init github.com/snowsoft/codeweaver

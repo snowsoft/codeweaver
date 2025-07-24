@@ -89,6 +89,15 @@ try {
     Write-Host "[*] Installing dependencies..." -ForegroundColor Yellow
     Write-Host ""
 
+    # Fix GOPROXY if needed
+    Write-Host "Checking Go proxy settings..." -ForegroundColor Gray
+    $currentProxy = & go env GOPROXY
+    if ($currentProxy -eq "" -or $currentProxy -eq '""') {
+        Write-Host "[!] Setting default GOPROXY..." -ForegroundColor Yellow
+        $env:GOPROXY = "https://proxy.golang.org,direct"
+        & go env -w GOPROXY="https://proxy.golang.org,direct"
+    }
+    
     # Initialize module
     Write-Host "Initializing Go module..." -ForegroundColor Gray
     & go mod init github.com/snowsoft/codeweaver
