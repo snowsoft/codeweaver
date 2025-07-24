@@ -10,6 +10,10 @@ Evrensel kod üretim ve dönüşüm CLI aracı - Yapay zeka destekli geliştiric
 - 🎨 **İnteraktif**: Renkli diff görünümü ve düzenleme seçenekleri
 - 🔧 **Modüler**: Kolayca genişletilebilir komut yapısı
 - 📦 **Template Sistemi**: Hazır proje şablonları ile hızlı başlangıç
+- 🤖 **Proaktif Asistan**: Daemon modu ile sürekli kod kalitesi önerileri
+- 🔮 **Etki Analizi**: Değişikliklerin etkisini önceden görme
+- 🏥 **Otomatik İyileştirme**: Proje sorunlarını tespit ve düzeltme
+- 💬 **Doğal Dil Desteği**: Kod tabanını doğal dilde sorgulama
 - 🚀 **Hızlı**: Go ile yazılmış, tek binary olarak dağıtılır
 
 ## 📋 İçindekiler
@@ -96,7 +100,9 @@ weaver new hello.py --task "Create a simple Flask API with hello world endpoint"
 
 ## 📖 Komutlar
 
-### 🆕 `weaver new` - Yeni Kod Üretme
+### Temel Komutlar
+
+#### 🆕 `weaver new` - Yeni Kod Üretme
 
 Sıfırdan yeni kod dosyaları oluşturur.
 
@@ -185,6 +191,66 @@ weaver review <dosya_adı> [--task <odak_noktası>]
 weaver review auth.php --task "Check for security vulnerabilities"
 weaver review algorithm.py --task "Analyze time complexity"
 ```
+
+### Gelişmiş Komutlar
+
+#### 🏥 `weaver heal-project` - Proje Doktoru
+
+Tüm kod tabanını analiz ederek sorunları tespit eder ve otomatik iyileştirme planı sunar.
+
+```bash
+weaver heal-project [--auto-fix] [--severity <level>]
+```
+
+#### 📦 `weaver add-dependency` - Akıllı Bağımlılık Yönetimi
+
+Sadece paket yüklemez, projeye tam entegre eder.
+
+```bash
+weaver add-dependency <package> [--integrate] [--example]
+```
+
+#### 🏛️ `weaver check-architecture` - Mimari Uyum Kontrolü
+
+Proje mimarisinin kurallara uygunluğunu kontrol eder.
+
+```bash
+weaver check-architecture
+```
+
+#### 👁️ `weaver --daemon` - Arka Plan Asistanı
+
+Sürekli çalışan, proaktif önerilerde bulunan asistan modu.
+
+```bash
+weaver --daemon start|stop|status
+```
+
+#### 💬 `weaver ask` - Doğal Dilde Kod Sorgulama
+
+Kod tabanınızı doğal dilde sorgulayın.
+
+```bash
+weaver ask "<soru>"
+```
+
+#### 📊 `weaver analyze-impact` - Değişiklik Etki Analizi
+
+Büyük değişikliklerin etkisini önceden görün.
+
+```bash
+weaver analyze-impact "<değişiklik senaryosu>"
+```
+
+#### 📅 `weaver plan-feature` - Özellik Planlama
+
+Yeni özellikler için otomatik görev listesi ve yol haritası oluşturur.
+
+```bash
+weaver plan-feature "<özellik açıklaması>" [--estimate]
+```
+
+Detaylı bilgi için [Gelişmiş Komutlar Wiki'sine](https://github.com/snowsoft/codeweaver/wiki/Advanced-Commands) bakın.
 
 ## 📦 Template Sistemi
 
