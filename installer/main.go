@@ -1,3 +1,5 @@
+// +build ignore
+
 // Universal installer for Code Weaver
 // Build: go build -o install-weaver install.go
 // Run: ./install-weaver (or install-weaver.exe on Windows)

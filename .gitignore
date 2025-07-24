@@ -1,0 +1,57 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+weaver
+codeweaver
+install-weaver
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Configuration files with sensitive data
+config.yaml
+!config.yaml.example
+
+# Backup directories
+.weaver_backups/
+
+# Build directories
+dist/
+build/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Test coverage
+coverage.txt
+coverage.html
+*.coverprofile
