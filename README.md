@@ -76,11 +76,76 @@ go install github.com/snowsoft/codeweaver@latest
 ```
 
 #### Option 2: Kaynak Koddan Derleme
+
+**Linux/macOS:**
 ```bash
+# 1. Projeyi klonla
 git clone https://github.com/snowsoft/codeweaver.git
 cd codeweaver
+
+# 2. Kurulum script'ini çalıştır
+chmod +x install.sh
+./install.sh
+```
+
+**Windows (PowerShell):**
+```powershell
+# 1. Projeyi klonla
+git clone https://github.com/snowsoft/codeweaver.git
+cd codeweaver
+
+# 2. PowerShell script'ini çalıştır
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+**Windows (Command Prompt):**
+```batch
+# 1. Projeyi klonla
+git clone https://github.com/snowsoft/codeweaver.git
+cd codeweaver
+
+# 2. Batch script'ini çalıştır
+install.bat
+```
+
+**Manuel Kurulum:**
+```bash
+# 1. Projeyi klonla
+git clone https://github.com/snowsoft/codeweaver.git
+cd codeweaver
+
+# 2. Bağımlılıkları indir
+go mod download
+go mod tidy
+
+# 3. Derle
 go build -o weaver .
+
+# 4. Sisteme kur
+# Linux/macOS
 sudo mv weaver /usr/local/bin/
+
+# Windows (Administrator olarak)
+move weaver.exe C:\Windows\System32\
+
+# 5. Konfigürasyon dosyasını oluştur
+mkdir -p ~/.config/weaver
+cp config.yaml.example ~/.config/weaver/config.yaml
+```
+
+#### Sorun Giderme - Kurulum
+Eğer `missing go.sum entry` hatası alırsanız:
+```bash
+# Bağımlılıkları manuel olarak ekleyin
+go get github.com/spf13/cobra@v1.8.0
+go get github.com/spf13/viper@v1.18.2
+go get github.com/pterm/pterm@v0.12.71
+go get github.com/sergi/go-diff@v1.3.1
+go get github.com/AlecAivazis/survey/v2@v2.3.7
+go get gopkg.in/yaml.v3@v3.0.1
+
+# go.sum dosyasını yeniden oluştur
+go mod tidy
 ```
 
 #### Option 3: Pre-built Binary İndir
