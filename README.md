@@ -70,12 +70,29 @@ What would you like to do?
 
 ### Kurulum
 
-#### Option 1: Go Install (Önerilen)
+#### Option 1: Docker (En Kolay)
+```bash
+# Docker Compose ile
+docker-compose up -d
+
+# veya Docker ile
+docker run --rm -it ghcr.io/snowsoft/codeweaver:latest --help
+```
+
+#### Option 2: Pre-built Binary
+```bash
+# Latest release'i indir
+wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-$(uname -s)-$(uname -m)
+chmod +x weaver-*
+sudo mv weaver-* /usr/local/bin/weaver
+```
+
+#### Option 3: Go Install (Önerilen)
 ```bash
 go install github.com/snowsoft/codeweaver@latest
 ```
 
-#### Option 2: Kaynak Koddan Derleme
+#### Option 4: Kaynak Koddan Derleme
 
 **Linux/macOS:**
 ```bash
