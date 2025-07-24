@@ -62,3 +62,12 @@ func PrintHeader(text string) {
     fmt.Println(color.New(color.Bold, color.FgCyan).Sprint(text))
     fmt.Println(color.CyanString(repeatChar("=", len(text))))
 }
+
+// repeatChar repeats a character n times
+func repeatChar(char string, n int) string {
+    var result string
+    for i := 0; i < n; i++ {
+        result += char
+    }
+    return result
+}
