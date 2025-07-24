@@ -26,7 +26,10 @@ func ConfirmAction(message string) bool {
     prompt := &survey.Confirm{
         Message: message,
     }
-    survey.AskOne(prompt, &confirm)
+    err := survey.AskOne(prompt, &confirm)
+    if err != nil {
+        return false
+    }
     return confirm
 }
 
@@ -63,7 +66,10 @@ func AskForInput(message string) string {
     prompt := &survey.Input{
         Message: message,
     }
-    survey.AskOne(prompt, &input)
+    err := survey.AskOne(prompt, &input)
+    if err != nil {
+        return ""
+    }
     return strings.TrimSpace(input)
 }
 

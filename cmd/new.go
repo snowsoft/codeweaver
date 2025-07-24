@@ -33,7 +33,9 @@ func init() {
     
     newCmd.Flags().StringVarP(&newTask, "task", "t", "", "Task description for code generation (required)")
     newCmd.Flags().StringVarP(&newContextFile, "context-file", "c", "", "Context file to reference during generation")
-    newCmd.MarkFlagRequired("task")
+    if err := newCmd.MarkFlagRequired("task"); err != nil {
+        fmt.Fprintf(os.Stderr, "Error marking flag as required: %v\n", err)
+    }
 }
 
 func runNew(cmd *cobra.Command, args []string) error {

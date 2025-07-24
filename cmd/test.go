@@ -171,7 +171,8 @@ func generateTestFileName(sourceFile, language string) string {
     case "php":
         // *Test.php pattern
         baseName := strings.TrimSuffix(base, ext)
-        className := strings.Title(baseName)
+        // Capitalize first letter manually
+        className := strings.ToUpper(baseName[:1]) + baseName[1:]
         return filepath.Join(dir, "tests", className+"Test"+ext)
     case "java":
         // *Test.java pattern

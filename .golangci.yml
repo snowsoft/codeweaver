@@ -1,0 +1,50 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - revive
+    - gosec
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  
+  gosimple:
+    go: "1.21"
+  
+  staticcheck:
+    go: "1.21"
+  
+  gofmt:
+    simplify: true
+  
+  goimports:
+    local-prefixes: github.com/snowsoft/codeweaver
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gosec
+        - errcheck
+
+run:
+  timeout: 5m
+  skip-dirs:
+    - vendor
+    - installer
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true

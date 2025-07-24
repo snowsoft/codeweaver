@@ -43,9 +43,15 @@ func init() {
     rootCmd.PersistentFlags().Float32("temperature", 0, "Model temperature (0-1)")
     
     // Bind flags to viper
-    viper.BindPFlag("ollama.api_url", rootCmd.PersistentFlags().Lookup("api-url"))
-    viper.BindPFlag("ollama.model", rootCmd.PersistentFlags().Lookup("model"))
-    viper.BindPFlag("ollama.temperature", rootCmd.PersistentFlags().Lookup("temperature"))
+    if err := viper.BindPFlag("ollama.api_url", rootCmd.PersistentFlags().Lookup("api-url")); err != nil {
+        fmt.Fprintf(os.Stderr, "Error binding flag: %v\n", err)
+    }
+    if err := viper.BindPFlag("ollama.model", rootCmd.PersistentFlags().Lookup("model")); err != nil {
+        fmt.Fprintf(os.Stderr, "Error binding flag: %v\n", err)
+    }
+    if err := viper.BindPFlag("ollama.temperature", rootCmd.PersistentFlags().Lookup("temperature")); err != nil {
+        fmt.Fprintf(os.Stderr, "Error binding flag: %v\n", err)
+    }
 }
 
 // initConfig reads in config file and ENV variables if set.

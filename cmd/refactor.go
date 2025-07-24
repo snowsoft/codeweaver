@@ -34,7 +34,9 @@ func init() {
     
     refactorCmd.Flags().StringVarP(&refactorTask, "task", "t", "", "Refactoring task description (required)")
     refactorCmd.Flags().StringVarP(&refactorContextDir, "context-dir", "c", "", "Context directory for project structure")
-    refactorCmd.MarkFlagRequired("task")
+    if err := refactorCmd.MarkFlagRequired("task"); err != nil {
+        fmt.Fprintf(os.Stderr, "Error marking flag as required: %v\n", err)
+    }
 }
 
 func runRefactor(cmd *cobra.Command, args []string) error {
