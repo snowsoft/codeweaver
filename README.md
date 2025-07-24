@@ -149,15 +149,41 @@ go get gopkg.in/yaml.v3@v3.0.1
 go mod tidy
 ```
 
-**Windows'ta `GOPROXY` hatası:**
+**Windows'ta `GOPROXY` veya `GOSUMDB` hatası:**
 ```batch
-# GOPROXY ayarını düzelt
+# Go ortam değişkenlerini düzelt
 go env -w GOPROXY=https://proxy.golang.org,direct
 go env -w GOSUMDB=sum.golang.org
 go env -w GO111MODULE=on
 
 # veya fix-goproxy.bat dosyasını çalıştır
 fix-goproxy.bat
+```
+
+**"package is not in std" hatası (Bozuk Go kurulumu):**
+```powershell
+# Go ortamını düzelt
+powershell -ExecutionPolicy Bypass -File fix-go-env.ps1
+
+# veya manuel olarak
+# 1. Go'yu tamamen kaldır
+# 2. https://go.dev/dl/ adresinden yeniden indir
+# 3. Varsayılan konuma kur (C:\Program Files\Go)
+# 4. Bilgisayarı yeniden başlat
+```
+
+**Proxy/Firewall arkasındaysanız:**
+```batch
+# Checksum doğrulamasını kapat
+go env -w GOSUMDB=off
+go env -w GOPROXY=direct
+
+# Şirket proxy'si varsa
+set HTTP_PROXY=http://proxy.company.com:8080
+set HTTPS_PROXY=http://proxy.company.com:8080
+
+# Offline kurulum script'ini kullan
+powershell -ExecutionPolicy Bypass -File install-offline.ps1
 ```
 
 #### Option 3: Pre-built Binary İndir
