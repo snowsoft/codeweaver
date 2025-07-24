@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/snowsoft/codeweaver/internal/cli/cmd"
 )
 
 var (
@@ -39,6 +40,13 @@ func init() {
 	// Bind flags to viper
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 	viper.BindPFlag("debug", rootCmd.PersistentFlags().Lookup("debug"))
+
+	// Register commands
+	rootCmd.AddCommand(cmd.VersionCmd)
+	rootCmd.AddCommand(cmd.DoctorCmd)
+	rootCmd.AddCommand(cmd.NewCmd)
+	rootCmd.AddCommand(cmd.RefactorCmd)
+	rootCmd.AddCommand(cmd.CreateCmd)
 }
 
 func initConfig() {
