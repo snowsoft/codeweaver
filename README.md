@@ -3,7 +3,6 @@
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=for-the-badge&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![Ollama](https://img.shields.io/badge/Powered%20by-Ollama-orange?style=for-the-badge)](https://ollama.ai/)
-[![Build and Release](https://github.com/snowsoft/codeweaver/actions/workflows/build.yml/badge.svg?event=status)](https://github.com/snowsoft/codeweaver/actions/workflows/build.yml)
 
 > Evrensel kod üretim ve dönüşüm CLI aracı - Yapay zeka destekli geliştirici asistanınız
 
