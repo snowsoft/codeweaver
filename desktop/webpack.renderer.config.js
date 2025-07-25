@@ -2,40 +2,67 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
+  mode: 'development',
   entry: './src/renderer/index.tsx',
-  target: 'electron-renderer',
-  devtool: 'source-map',
+  target: 'web',
   devServer: {
-    port: 3456,  // Port değiştirildi
-    hot: true,
-    host: 'localhost'  // 0.0.0.0 yerine localhost
+    static: './public',
+    port: 3456,
+    hot: false,
+    liveReload: true,
+    open: true,
   },
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/,
-        include: /src/,
-        use: [{ loader: 'ts-loader' }]
+        test: /\.(js|jsx|ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              ['@babel/preset-react', { runtime: 'automatic' }],
+              '@babel/preset-typescript',
+            ],
+          },
+        },
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
-      }
-    ]
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist/renderer'),
-    filename: 'bundle.js'
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('@tailwindcss/postcss'),
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {
-      '@': path.resolve(__dirname, 'src/renderer')
-    }
+      '@': path.resolve(__dirname, 'src/renderer'),
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html'
-    })
-  ]
+      template: './public/index.html',
+    }),
+  ],
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
+  devtool: 'source-map',
 };
