@@ -17,6 +17,7 @@ install-weaver
 # Dependency directories
 vendor/
 desktop/node_modules/
+desktopv1/node_modules/
 
 # Go workspace file
 go.work
