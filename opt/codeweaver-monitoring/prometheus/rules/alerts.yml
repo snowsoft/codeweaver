@@ -1,0 +1,31 @@
+# /opt/codeweaver-monitoring/prometheus/rules/alerts.yml
+
+groups:
+  - name: codeweaver_alerts
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on {{ $labels.instance }}"
+          description: "Error rate is {{ $value }} errors per second"
+
+      - alert: AIGenerationSlow
+        expr: histogram_quantile(0.95, ai_generation_duration_seconds) > 30
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI generation is slow"
+          description: "95th percentile generation time is {{ $value }}s"
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"

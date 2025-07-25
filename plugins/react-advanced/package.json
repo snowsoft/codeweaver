@@ -1,0 +1,80 @@
+{
+  "id": "codeweaver.react-advanced",
+  "name": "React Advanced Tools",
+  "version": "1.0.0",
+  "description": "Advanced React development tools for CodeWeaver",
+  "author": {
+    "name": "CodeWeaver Team",
+    "email": "team@codeweaver.dev"
+  },
+  "engines": {
+    "codeweaver": "^3.0.0"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "react-advanced.createComponent",
+        "title": "Create Advanced React Component",
+        "category": "React"
+      },
+      {
+        "command": "react-advanced.convertToHooks",
+        "title": "Convert Class to Hooks",
+        "category": "React"
+      }
+    ],
+    "templates": [
+      {
+        "id": "react-component-advanced",
+        "name": "Advanced React Component",
+        "description": "React component with tests, stories, and documentation",
+        "category": "React",
+        "files": [
+          {
+            "path": "{{name}}/{{name}}.tsx",
+            "content": "..."
+          },
+          {
+            "path": "{{name}}/{{name}}.test.tsx",
+            "content": "..."
+          },
+          {
+            "path": "{{name}}/{{name}}.stories.tsx",
+            "content": "..."
+          }
+        ]
+      }
+    ],
+    "aiPrompts": [
+      {
+        "id": "react-optimization",
+        "name": "React Performance Optimization",
+        "description": "Optimize React component for performance",
+        "prompt": "Analyze this React component and suggest performance optimizations including memo, useMemo, useCallback usage, and render optimization techniques"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/react.json"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "webpack --mode production"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "webpack": "^5.0.0"
+  }
+}
