@@ -15,13 +15,21 @@ function createWindow() {
         }
     });
 
-    // Development veya production'a göre yükle
-    if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
-        mainWindow.loadURL('http://localhost:5174'); // Port değişti
-        mainWindow.webContents.openDevTools();
-    } else {
-        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-    }
+    // Development URL'i her zaman yükle (şimdilik)
+    const url = 'http://localhost:5173';
+
+    mainWindow.loadURL(url).catch(err => {
+        console.error('Failed to load URL:', url);
+        console.error('Error:', err);
+        // Fallback olarak bir HTML göster
+        mainWindow?.loadURL(`data:text/html,
+      <h1>Vite server is not running!</h1>
+      <p>Please run: npm run dev:vite</p>
+      <p>Then refresh this window (Ctrl+R)</p>
+    `);
+    });
+
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', () => {
         mainWindow = null;

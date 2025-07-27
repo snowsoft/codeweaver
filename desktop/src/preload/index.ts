@@ -1,7 +1,34 @@
+// src/preload/index.ts
 import { contextBridge, ipcRenderer } from 'electron';
 
-// Expose protected methods that allow the renderer process to use
-// the ipcRenderer without exposing the entire object
+// Window API tipini genişlet
+declare global {
+    interface Window {
+        api: {
+            weaver: {
+                execute: (command: string) => Promise<{stdout: string, stderr: string}>
+            },
+            file: {
+                read: (filePath: string) => Promise<{success: boolean, content?: string, error?: string}>,
+                write: (filePath: string, content: string) => Promise<{success: boolean, error?: string}>,
+                list: (dirPath: string) => Promise<{success: boolean, files?: any[], error?: string}>,
+                create: (filePath: string) => Promise<{success: boolean, error?: string}>,
+                delete: (filePath: string) => Promise<{success: boolean, error?: string}>,
+                rename: (oldPath: string, newPath: string) => Promise<{success: boolean, error?: string}>
+            },
+            dialog: {
+                openFile: () => Promise<Electron.OpenDialogReturnValue>,
+                openDirectory: () => Promise<Electron.OpenDialogReturnValue>
+            },
+            shell: {
+                openExternal: (url: string) => Promise<void>
+            },
+            on: (channel: string, callback: (...args: any[]) => void) => void,
+            removeAllListeners: (channel: string) => void
+        }
+    }
+}
+
 contextBridge.exposeInMainWorld('api', {
     // Weaver commands
     weaver: {
@@ -11,7 +38,11 @@ contextBridge.exposeInMainWorld('api', {
     // File operations
     file: {
         read: (filePath: string) => ipcRenderer.invoke('file:read', filePath),
-        write: (filePath: string, content: string) => ipcRenderer.invoke('file:write', filePath, content)
+        write: (filePath: string, content: string) => ipcRenderer.invoke('file:write', filePath, content),
+        list: (dirPath: string) => ipcRenderer.invoke('file:list', dirPath),
+        create: (filePath: string) => ipcRenderer.invoke('file:create', filePath),
+        delete: (filePath: string) => ipcRenderer.invoke('file:delete', filePath),
+        rename: (oldPath: string, newPath: string) => ipcRenderer.invoke('file:rename', oldPath, newPath)
     },
 
     // Dialog operations
@@ -26,14 +57,14 @@ contextBridge.exposeInMainWorld('api', {
     },
 
     // Menu events
-    on: (channel: string, callback: Function) => {
+    on: (channel: string, callback: (...args: any[]) => void) => {
         const validChannels = [
             'menu:newFile', 'menu:openFile', 'menu:openFolder', 'menu:save', 'menu:about',
             'weaver:generate', 'weaver:refactor', 'weaver:document', 'weaver:test', 'weaver:review',
             'shell:openExternal'
         ];
         if (validChannels.includes(channel)) {
-            ipcRenderer.on(channel, (event, ...args) => callback(...args));
+            ipcRenderer.on(channel, (_, ...args) => callback(...args));
         }
     },
 

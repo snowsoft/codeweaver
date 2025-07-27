@@ -1,0 +1,74 @@
+﻿/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+}
+
+/* Electron specific styles */
+.drag-region {
+    -webkit-app-region: drag;
+}
+
+.no-drag {
+    -webkit-app-region: no-drag;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+/* Disable text selection globally except in inputs */
+body {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* Remove focus outline and add custom */
+*:focus {
+    outline: none;
+}
+
+.focus-visible:focus {
+    @apply ring-2 ring-blue-500 ring-offset-2 ring-offset-gray-900;
+}
+/* React Contexify Custom Styles */
+.react-contexify {
+  @apply bg-gray-800 border border-gray-700 rounded-lg shadow-lg;
+}
+
+.react-contexify__item {
+  @apply text-gray-300 hover:bg-gray-700 hover:text-white;
+}
+
+.react-contexify__item:not(:last-child) {
+  @apply border-b border-gray-700;
+}
+
+.react-contexify__separator {
+  @apply bg-gray-700;
+}

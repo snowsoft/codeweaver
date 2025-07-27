@@ -1,0 +1,95 @@
+﻿{
+  "app": {
+    "title": "CodeWeaver MasaÃ¼stÃ¼",
+    "ready": "HazÄ±r",
+    "connected": "BaÄŸlÄ±",
+    "model": "Model"
+  },
+  "navigation": {
+    "title": "Gezinme",
+    "dashboard": "Kontrol Paneli",
+    "generate": "OluÅŸtur",
+    "refactor": "Yeniden DÃ¼zenle",
+    "document": "Belgele",
+    "test": "Test",
+    "review": "Ä°ncele",
+    "history": "GeÃ§miÅŸ",
+    "settings": "Ayarlar"
+  },
+  "dashboard": {
+    "title": "CodeWeaver Kontrol Paneli",
+    "stats": {
+      "totalFiles": "Toplam Dosya",
+      "codeGenerated": "Ãœretilen Kod",
+      "testsCreated": "OluÅŸturulan Test",
+      "reviewsDone": "YapÄ±lan Ä°nceleme"
+    },
+    "recentActivities": "Son Aktiviteler",
+    "activities": {
+      "generated": "OluÅŸturuldu",
+      "refactored": "Yeniden dÃ¼zenlendi",
+      "documented": "Belgelendi",
+      "tested": "Test edildi"
+    },
+    "quickActions": {
+      "generate": "Kod OluÅŸtur",
+      "refactor": "Kod DÃ¼zenle",
+      "createTests": "Test OluÅŸtur",
+      "review": "Kod Ä°ncele"
+    }
+  },
+  "generate": {
+    "title": "Kod OluÅŸtur",
+    "fileName": "Dosya AdÄ±",
+    "fileNamePlaceholder": "Ã¶rn., kullanici_servisi.py",
+    "taskDescription": "GÃ¶rev AÃ§Ä±klamasÄ±",
+    "taskPlaceholder": "Ne oluÅŸturmak istediÄŸinizi aÃ§Ä±klayÄ±n...",
+    "generateButton": "Kod OluÅŸtur",
+    "generating": "OluÅŸturuluyor...",
+    "output": "Ã‡Ä±ktÄ±",
+    "outputPlaceholder": "Ã‡Ä±ktÄ± burada gÃ¶rÃ¼necek...",
+    "fillAllFields": "LÃ¼tfen tÃ¼m alanlarÄ± doldurun"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "language": "Dil",
+    "theme": "Tema",
+    "themes": {
+      "light": "AÃ§Ä±k",
+      "dark": "Koyu",
+      "system": "Sistem"
+    },
+    "editor": "EditÃ¶r AyarlarÄ±",
+    "fontSize": "YazÄ± Boyutu",
+    "tabSize": "Sekme Boyutu",
+    "wordWrap": "SÃ¶zcÃ¼k KaydÄ±rma",
+    "on": "AÃ§Ä±k",
+    "off": "KapalÄ±"
+  },
+  "fileExplorer": {
+    "title": "Dosya Gezgini",
+    "newFile": "Yeni Dosya",
+    "newFolder": "Yeni KlasÃ¶r",
+    "delete": "Sil",
+    "rename": "Yeniden AdlandÄ±r"
+  },
+  "terminal": {
+    "title": "Terminal",
+    "clear": "Temizle",
+    "close": "Kapat"
+  },
+  "common": {
+    "save": "Kaydet",
+    "cancel": "Ä°ptal",
+    "delete": "Sil",
+    "edit": "DÃ¼zenle",
+    "open": "AÃ§",
+    "close": "Kapat",
+    "yes": "Evet",
+    "no": "HayÄ±r",
+    "confirm": "Onayla",
+    "error": "Hata",
+    "success": "BaÅŸarÄ±lÄ±",
+    "warning": "UyarÄ±"
+  }
+}
