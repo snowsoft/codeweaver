@@ -1,22 +1,11 @@
+// src/renderer/index.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
 import App from './App';
-import './styles/globals.css';
+import './styles/main.css';
 
-// Create root element
-const container = document.getElementById('root');
-if (!container) {
-    throw new Error('Failed to find the root element');
-}
-
-const root = ReactDOM.createRoot(container);
-
-// Render app
-root.render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <HashRouter>
-            <App />
-        </HashRouter>
+        <App />
     </React.StrictMode>
 );

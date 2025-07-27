@@ -1,17 +1,34 @@
-# CodeWeaver Desktop
+# CodeWeaver Desktop Application
 
-AI-powered code generation desktop application.
+A desktop application for CodeWeaver, providing a native GUI for the AI-powered code generation tool.
 
-## Setup
+## Features
 
-1. Install dependencies: npm install
-2. Run development: npm run electron:dev
-3. Build: npm run electron:build
+- 🖥️ Native desktop experience for Windows, macOS, and Linux
+- 📝 Integrated code editor with syntax highlighting
+- 🚀 Direct integration with CodeWeaver CLI
+- 📁 File explorer sidebar
+- 💻 Integrated terminal
+- 🎨 Dark theme optimized for developers
+- 🔄 Auto-update functionality
+- ⌨️ Keyboard shortcuts for all major functions
 
-## Technologies
+## Development
 
-- Electron
-- React
-- TypeScript
-- Tailwind CSS
-- Vite
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- CodeWeaver CLI installed and configured
+
+### Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Build for production
+npm run build

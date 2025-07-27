@@ -1,3 +1,5 @@
+
+$content = @'
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -17,12 +19,20 @@
     "sourceMap": true
   },
   "include": [
-    "src/main/**/*",
-    "src/preload/**/*"
+    "src/main/**/*.ts",
+    "src/main/**/*.js",
+    "src/preload/**/*.ts",
+    "src/preload/**/*.js"
   ],
   "exclude": [
     "src/renderer/**/*",
     "src/views/**/*",
-    "src/components/**/*"
+    "src/components/**/*",
+    "node_modules"
   ]
 }
+'@
+
+Set-Content -Path "tsconfig.main.json" -Value $content -Encoding UTF8
+Write-Host "tsconfig.main.json created successfully!"
+

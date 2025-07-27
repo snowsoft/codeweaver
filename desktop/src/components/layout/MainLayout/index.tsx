@@ -1,16 +1,17 @@
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Sidebar } from '../Sidebar';
-import { StatusBar } from '../StatusBar';
-import { Dashboard } from '../../../views/Dashboard';
-import { Generate } from '../../../views/Generate';
-import { Refactor } from '../../../views/Refactor';
-import { Document } from '../../../views/Document';
-import { Test } from '../../../views/Test';
-import { Review } from '../../../views/Review';
-import { History } from '../../../views/History';
-import { Settings } from '../../../views/Settings';
+import Sidebar from '../Sidebar';
+import StatusBar from '../StatusBar';
+import Dashboard from '../../../views/Dashboard';
+import Generate from '../../../views/Generate';
+import Refactor from '../../../views/Refactor';
+import Document from '../../../views/Document';
+import Test from '../../../views/Test';
+import Review from '../../../views/Review';
+import History from '../../../views/History';
+import Settings from '../../../views/Settings';
 
-export function MainLayout() {
+const MainLayout = () => {
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
             <Sidebar />
@@ -31,4 +32,10 @@ export function MainLayout() {
             </div>
         </div>
     );
-}
+};
+
+// Named export
+export { MainLayout };
+
+// Default export
+export default MainLayout;

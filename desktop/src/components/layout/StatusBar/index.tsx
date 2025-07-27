@@ -1,4 +1,6 @@
-export function StatusBar() {
+﻿import React from 'react';
+
+const StatusBar = () => {
   return (
     <div className="bg-gray-800 text-white px-6 py-2 flex items-center justify-between text-sm">
       <div className="flex items-center gap-4">
@@ -13,4 +15,6 @@ export function StatusBar() {
       </div>
     </div>
   );
-}
+};
+
+export default StatusBar;

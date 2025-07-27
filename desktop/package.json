@@ -1,69 +1,79 @@
 {
-    "name": "codeweaver-desktop",
-    "version": "1.0.0",
-    "description": "CodeWeaver Desktop v1.0.0 - AI-powered code generation and transformation tool",
-    "main": "dist/electron/main/index.js",
-    "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "preview": "vite preview",
-        "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-        "electron:build": "npm run build && electron-builder",
-        "electron:build:mac": "npm run build && electron-builder --mac",
-        "electron:build:win": "npm run build && electron-builder --win",
-        "electron:build:linux": "npm run build && electron-builder --linux",
-        "test": "vitest",
-        "test:e2e": "playwright test",
-        "lint": "eslint . --ext .ts,.tsx",
-        "format": "prettier --write .",
-        "postinstall": "electron-builder install-app-deps",
-        "type-check": "tsc --noEmit"
+  "name": "codeweaver-desktop",
+  "version": "1.0.0",
+  "description": "CodeWeaver Desktop Application - AI-powered code generation tool",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on tcp:5174 && electron .",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "preview": "vite preview",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.7",
+    "@codemirror/lang-javascript": "^6.2.1",
+    "@codemirror/lang-python": "^6.1.3",
+    "@codemirror/lang-go": "^6.0.0",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/basic-setup": "^0.20.0",
+    "@codemirror/view": "^6.22.0",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.0"
+  },
+  "build": {
+    "appId": "com.snowsoft.codeweaver",
+    "productName": "CodeWeaver",
+    "directories": {
+      "output": "dist-electron"
     },
-    "dependencies": {
-        "@monaco-editor/react": "^4.6.0",
-        "@tabler/icons-react": "^3.0.0",
-        "axios": "^1.6.5",
-        "clsx": "^2.1.0",
-        "date-fns": "^3.2.0",
-        "framer-motion": "^10.18.0",
-        "monaco-editor": "^0.45.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-hot-toast": "^2.4.1",
-        "react-hotkeys-hook": "^4.4.3",
-        "react-router-dom": "^6.21.0",
-        "tailwind-merge": "^2.6.0",
-        "zustand": "^4.5.0"
-    },
-    "devDependencies": {
-        "@types/node": "^20.11.0",
-        "@types/react": "^18.2.48",
-        "@types/react-dom": "^18.2.18",
-        "@typescript-eslint/eslint-plugin": "^6.19.0",
-        "@typescript-eslint/parser": "^6.19.0",
-        "@vitejs/plugin-react": "^4.2.1",
-        "autoprefixer": "^10.4.16",
-        "concurrently": "^8.2.2",
-        "electron": "^28.1.3",
-        "electron-builder": "^24.9.1",
-        "eslint": "^8.56.0",
-        "eslint-plugin-react": "^7.33.2",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "postcss": "^8.4.33",
-        "prettier": "^3.2.4",
-        "tailwindcss": "^3.4.1",
-        "typescript": "^5.3.3",
-        "vite": "^5.0.11",
-        "vitest": "^1.2.1",
-        "wait-on": "^7.2.0"
-    },
-    "keywords": [
-        "codeweaver",
-        "ai",
-        "code-generation",
-        "developer-tools",
-        "electron"
+    "files": [
+      "dist/**/*",
+      "!dist/renderer/index.html"
     ],
-    "author": "Snowsoft",
-    "license": "MIT"
+    "extraFiles": [
+      {
+        "from": "dist/renderer",
+        "to": "renderer",
+        "filter": ["**/*"]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"]
+    }
+  }
 }

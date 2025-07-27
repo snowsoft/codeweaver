@@ -1,0 +1,32 @@
+<!-- create-icon.html - Open this in browser and save the image -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Icon</title>
+</head>
+<body>
+    <canvas id="canvas" width="256" height="256"></canvas>
+    <br>
+    <a id="download" download="icon.png" href="">Download Icon</a>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = '#1e1e1e';
+        ctx.fillRect(0, 0, 256, 256);
+        
+        // Text
+        ctx.fillStyle = '#007acc';
+        ctx.font = 'bold 120px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('CW', 128, 128);
+        
+        // Create download link
+        const link = document.getElementById('download');
+        link.href = canvas.toDataURL('image/png');
+    </script>
+</body>
+</html>
