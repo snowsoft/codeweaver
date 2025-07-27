@@ -1,95 +1,75 @@
 ﻿{
-  "app": {
+  "header": {
     "title": "CodeWeaver Desktop",
-    "ready": "Ready",
-    "connected": "Connected",
-    "model": "Model"
+    "search": "Search files...",
+    "openFolder": "Open Folder",
+    "terminal": "Terminal",
+    "git": "Git",
+    "settings": "Settings"
   },
-  "navigation": {
-    "title": "Navigation",
+  "sidebar": {
     "dashboard": "Dashboard",
-    "generate": "Generate",
-    "refactor": "Refactor",
-    "document": "Document",
-    "test": "Test",
-    "review": "Review",
-    "history": "History",
+    "editor": "Editor",
+    "terminal": "Terminal",
+    "git": "Git",
+    "extensions": "Extensions",
     "settings": "Settings"
   },
   "dashboard": {
-    "title": "CodeWeaver Dashboard",
-    "stats": {
-      "totalFiles": "Total Files",
-      "codeGenerated": "Code Generated",
-      "testsCreated": "Tests Created",
-      "reviewsDone": "Reviews Done"
-    },
-    "recentActivities": "Recent Activities",
-    "activities": {
-      "generated": "Generated",
-      "refactored": "Refactored",
-      "documented": "Documented",
-      "tested": "Tested"
-    },
-    "quickActions": {
-      "generate": "Generate Code",
-      "refactor": "Refactor Code",
-      "createTests": "Create Tests",
-      "review": "Review Code"
-    }
-  },
-  "generate": {
-    "title": "Generate Code",
-    "fileName": "File Name",
-    "fileNamePlaceholder": "e.g., user_service.py",
-    "taskDescription": "Task Description",
-    "taskPlaceholder": "Describe what you want to generate...",
-    "generateButton": "Generate Code",
-    "generating": "Generating...",
-    "output": "Output",
-    "outputPlaceholder": "Output will appear here...",
-    "fillAllFields": "Please fill in all fields"
+    "welcome": "Welcome to CodeWeaver Desktop",
+    "recentProjects": "Recent Projects",
+    "quickActions": "Quick Actions",
+    "newFile": "New File",
+    "openProject": "Open Project",
+    "cloneRepository": "Clone Repository"
   },
   "settings": {
     "title": "Settings",
     "language": "Language",
     "theme": "Theme",
-    "themes": {
-      "light": "Light",
-      "dark": "Dark",
-      "system": "System"
-    },
-    "editor": "Editor Settings",
-    "fontSize": "Font Size",
-    "tabSize": "Tab Size",
-    "wordWrap": "Word Wrap",
-    "on": "On",
-    "off": "Off"
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "fileExplorer": {
-    "title": "File Explorer",
+    "title": "EXPLORER",
     "newFile": "New File",
     "newFolder": "New Folder",
+    "rename": "Rename",
     "delete": "Delete",
-    "rename": "Rename"
+    "refresh": "Refresh",
+    "openInExplorer": "Open in Explorer",
+    "copyPath": "Copy Path",
+    "searchFiles": "Search Files"
+  },
+  "editor": {
+    "untitled": "Untitled",
+    "save": "Save",
+    "saveAs": "Save As",
+    "close": "Close",
+    "closeAll": "Close All",
+    "undo": "Undo",
+    "redo": "Redo",
+    "find": "Find",
+    "replace": "Replace",
+    "noFileOpen": "No file is open",
+    "selectFile": "Select a file from the explorer to start editing",
+    "placeholder": "Start typing..."
   },
   "terminal": {
-    "title": "Terminal",
+    "new": "New Terminal",
     "clear": "Clear",
-    "close": "Close"
-  },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "open": "Open",
     "close": "Close",
-    "yes": "Yes",
-    "no": "No",
-    "confirm": "Confirm",
-    "error": "Error",
-    "success": "Success",
-    "warning": "Warning"
+    "split": "Split"
+  },
+  "weaver": {
+    "commands": {
+      "new": "Create New Code",
+      "refactor": "Refactor Code",
+      "document": "Add Documentation",
+      "test": "Generate Tests",
+      "review": "Code Review"
+    }
   }
 }

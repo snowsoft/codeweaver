@@ -3,14 +3,14 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [react()],
-    base: './',
-    build: {
-        outDir: 'dist/renderer',
-        emptyOutDir: true,
-    },
     server: {
-        port: 5174, // Alternatif port
-        strictPort: false, // Eğer port doluysa otomatik başka port bul
-        host: true
+        port: 5173,
+        // UTF-8 header ekle
+        headers: {
+            'Content-Type': 'text/html; charset=UTF-8'
+        }
     },
+    build: {
+        charset: 'utf8'
+    }
 });

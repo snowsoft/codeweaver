@@ -1,0 +1,169 @@
+/* src/components/FileExplorer/FileExplorer.css */
+.file-explorer {
+    height: 100%;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+}
+
+.file-explorer-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.file-explorer-header h3 {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.file-explorer-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.file-explorer-actions button {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.file-explorer-actions button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.file-tree {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 0;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 13px;
+    white-space: nowrap;
+    transition: background-color 0.1s;
+}
+
+.file-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.file-item.selected {
+    background-color: var(--accent-bg);
+    color: var(--accent-color);
+}
+
+.file-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 4px;
+    color: var(--text-secondary);
+}
+
+.file-item.selected .file-icon {
+    color: var(--accent-color);
+}
+
+.file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Context Menu */
+.context-menu {
+    position: fixed;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 160px;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.1s;
+}
+
+.context-menu-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.context-menu-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 4px 8px;
+}
+
+/* Scrollbar stilleri */
+.file-tree::-webkit-scrollbar {
+    width: 8px;
+}
+
+.file-tree::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.file-tree::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+
+.file-tree::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+}
+
+/* CSS değişkenleri - tema sistemine eklenecek */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --hover-bg: #e8e8e8;
+    --accent-bg: #007acc;
+    --accent-color: #ffffff;
+    --scrollbar-thumb: #cccccc;
+    --scrollbar-thumb-hover: #999999;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #252526;
+    --text-primary: #cccccc;
+    --text-secondary: #8c8c8c;
+    --border-color: #3e3e3e;
+    --hover-bg: #2a2d2e;
+    --accent-bg: #094771;
+    --accent-color: #ffffff;
+    --scrollbar-thumb: #424242;
+    --scrollbar-thumb-hover: #525252;
+}

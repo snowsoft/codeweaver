@@ -1,6 +1,5 @@
 // src/components/FileExplorer/index.tsx
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
     ChevronRight,
     ChevronDown,
@@ -8,22 +7,22 @@ import {
     Folder,
     FolderOpen,
     Plus,
-    RefreshCw,
+    Trash2,
+    Edit3,
     FileText,
     FileCode,
-    FileJson,
     Image,
-    MoreVertical
+    Archive
 } from 'lucide-react';
-import { Menu, Item, useContextMenu } from 'react-contexify';
-import 'react-contexify/dist/ReactContexify.css';
+import { useTranslation } from 'react-i18next';
+import './FileExplorer.css';
 
 interface FileNode {
     name: string;
     path: string;
     type: 'file' | 'directory';
     children?: FileNode[];
-    expanded?: boolean;
+    extension?: string;
 }
 
 interface FileExplorerProps {
@@ -33,168 +32,200 @@ interface FileExplorerProps {
 
 const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.' }) => {
     const { t } = useTranslation();
-    const [files, setFiles] = useState<FileNode[]>([]);
-    const [selectedPath, setSelectedPath] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const { show } = useContextMenu({ id: 'file-menu' });
+    const [fileTree, setFileTree] = useState<FileNode[]>([]);
+    const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+    const [selectedFile, setSelectedFile] = useState<string>('');
+    const [contextMenu, setContextMenu] = useState<{ x: number; y: number; path: string } | null>(null);
 
-    // File icon based on extension
-    const getFileIcon = (filename: string) => {
-        const ext = filename.split('.').pop()?.toLowerCase();
+    // Dosya uzantısına göre ikon seçimi
+    const getFileIcon = (fileName: string) => {
+        const ext = fileName.split('.').pop()?.toLowerCase();
         switch (ext) {
             case 'js':
             case 'jsx':
             case 'ts':
             case 'tsx':
-                return <FileCode className="w-4 h-4 text-yellow-500" />;
-            case 'json':
-                return <FileJson className="w-4 h-4 text-orange-500" />;
+            case 'py':
+            case 'go':
+            case 'java':
+            case 'cpp':
+            case 'c':
+            case 'php':
+                return <FileCode size={16} />;
             case 'md':
             case 'txt':
-                return <FileText className="w-4 h-4 text-gray-400" />;
-            case 'png':
+            case 'doc':
+            case 'docx':
+                return <FileText size={16} />;
             case 'jpg':
             case 'jpeg':
+            case 'png':
             case 'gif':
-                return <Image className="w-4 h-4 text-green-500" />;
+            case 'svg':
+                return <Image size={16} />;
+            case 'zip':
+            case 'tar':
+            case 'gz':
+            case 'rar':
+                return <Archive size={16} />;
             default:
-                return <File className="w-4 h-4 text-gray-400" />;
+                return <File size={16} />;
         }
     };
 
-    // Load files from API
-    const loadFiles = async (path: string = rootPath) => {
-        setLoading(true);
-        try {
-            if (window.api?.file?.list) {
-                const result = await window.api.file.list(path);
-                if (result.success) {
-                    setFiles(result.files);
+    // Klasör aç/kapa
+    const toggleFolder = (path: string) => {
+        setExpandedFolders(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(path)) {
+                newSet.delete(path);
+            } else {
+                newSet.add(path);
+            }
+            return newSet;
+        });
+    };
+
+    // Dosya seçimi
+    const handleFileClick = (node: FileNode) => {
+        if (node.type === 'file') {
+            setSelectedFile(node.path);
+            onFileSelect?.(node.path);
+        } else {
+            toggleFolder(node.path);
+        }
+    };
+
+    // Sağ tık menüsü
+    const handleContextMenu = (e: React.MouseEvent, path: string) => {
+        e.preventDefault();
+        setContextMenu({ x: e.clientX, y: e.clientY, path });
+    };
+
+    // Dosya ağacı render
+    const renderTree = (nodes: FileNode[], level = 0) => {
+        return nodes.map((node) => {
+            const isExpanded = expandedFolders.has(node.path);
+            const isSelected = selectedFile === node.path;
+
+            return (
+                <div key={node.path}>
+                    <div
+                        className={`file-item ${isSelected ? 'selected' : ''}`}
+                        style={{ paddingLeft: `${level * 20 + 10}px` }}
+                        onClick={() => handleFileClick(node)}
+                        onContextMenu={(e) => handleContextMenu(e, node.path)}
+                    >
+                        {node.type === 'directory' ? (
+                            <>
+                <span className="file-icon">
+                  {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </span>
+                                <span className="file-icon">
+                  {isExpanded ? <FolderOpen size={16} /> : <Folder size={16} />}
+                </span>
+                            </>
+                        ) : (
+                            <>
+                                <span className="file-icon" style={{ width: '16px' }}></span>
+                                <span className="file-icon">{getFileIcon(node.name)}</span>
+                            </>
+                        )}
+                        <span className="file-name">{node.name}</span>
+                    </div>
+                    {node.type === 'directory' && isExpanded && node.children && (
+                        <div>{renderTree(node.children, level + 1)}</div>
+                    )}
+                </div>
+            );
+        });
+    };
+
+    // Electron IPC ile dosya sistemi okuma
+    useEffect(() => {
+        const loadFileTree = async () => {
+            if (window.electron) {
+                try {
+                    const tree = await window.electron.readDirectory(rootPath);
+                    setFileTree(tree);
+                } catch (error) {
+                    console.error('Dosya ağacı yüklenemedi:', error);
                 }
             } else {
-                // Mock data for development
-                setFiles([
+                // Demo veri
+                setFileTree([
                     {
                         name: 'src',
                         path: '/src',
                         type: 'directory',
                         children: [
-                            { name: 'main.tsx', path: '/src/main.tsx', type: 'file' },
+                            {
+                                name: 'components',
+                                path: '/src/components',
+                                type: 'directory',
+                                children: [
+                                    { name: 'Button.tsx', path: '/src/components/Button.tsx', type: 'file' },
+                                    { name: 'Input.tsx', path: '/src/components/Input.tsx', type: 'file' }
+                                ]
+                            },
                             { name: 'App.tsx', path: '/src/App.tsx', type: 'file' },
-                            { name: 'index.css', path: '/src/index.css', type: 'file' },
+                            { name: 'main.tsx', path: '/src/main.tsx', type: 'file' }
                         ]
                     },
                     { name: 'package.json', path: '/package.json', type: 'file' },
-                    { name: 'README.md', path: '/README.md', type: 'file' },
+                    { name: 'README.md', path: '/README.md', type: 'file' }
                 ]);
             }
-        } catch (error) {
-            console.error('Failed to load files:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
 
-    useEffect(() => {
-        loadFiles();
+        loadFileTree();
     }, [rootPath]);
 
-    const toggleExpand = (node: FileNode) => {
-        node.expanded = !node.expanded;
-        setFiles([...files]);
-    };
-
-    const handleFileClick = (node: FileNode) => {
-        if (node.type === 'file') {
-            setSelectedPath(node.path);
-            onFileSelect?.(node.path);
-        } else {
-            toggleExpand(node);
-        }
-    };
-
-    const handleContextMenu = (e: React.MouseEvent, node: FileNode) => {
-        e.preventDefault();
-        show({ event: e, props: { node } });
-    };
-
-    const renderTree = (nodes: FileNode[], level = 0) => {
-        return nodes.map((node) => (
-            <div key={node.path}>
-                <div
-                    className={`flex items-center gap-2 px-2 py-1 hover:bg-gray-700 cursor-pointer text-sm ${
-                        selectedPath === node.path ? 'bg-gray-700' : ''
-                    }`}
-                    style={{ paddingLeft: `${level * 16 + 8}px` }}
-                    onClick={() => handleFileClick(node)}
-                    onContextMenu={(e) => handleContextMenu(e, node)}
-                >
-                    {node.type === 'directory' && (
-                        node.expanded ?
-                            <ChevronDown className="w-4 h-4" /> :
-                            <ChevronRight className="w-4 h-4" />
-                    )}
-                    {node.type === 'directory' ? (
-                        node.expanded ?
-                            <FolderOpen className="w-4 h-4 text-blue-400" /> :
-                            <Folder className="w-4 h-4 text-blue-400" />
-                    ) : (
-                        getFileIcon(node.name)
-                    )}
-                    <span className="text-gray-300">{node.name}</span>
-                </div>
-                {node.type === 'directory' && node.expanded && node.children && (
-                    renderTree(node.children, level + 1)
-                )}
-            </div>
-        ));
-    };
+    // Context menüyü kapat
+    useEffect(() => {
+        const handleClick = () => setContextMenu(null);
+        document.addEventListener('click', handleClick);
+        return () => document.removeEventListener('click', handleClick);
+    }, []);
 
     return (
-        <div className="h-full bg-gray-800 border-r border-gray-700 flex flex-col">
-            <div className="p-3 border-b border-gray-700 flex items-center justify-between">
-                <h3 className="text-xs uppercase text-gray-400">{t('fileExplorer.title')}</h3>
-                <div className="flex items-center gap-1">
-                    <button
-                        onClick={() => loadFiles()}
-                        className="p-1 hover:bg-gray-700 rounded"
-                        title={t('common.refresh')}
-                    >
-                        <RefreshCw className="w-4 h-4 text-gray-400" />
+        <div className="file-explorer">
+            <div className="file-explorer-header">
+                <h3>{t('fileExplorer.title', 'EXPLORER')}</h3>
+                <div className="file-explorer-actions">
+                    <button title={t('fileExplorer.newFile', 'New File')}>
+                        <Plus size={16} />
                     </button>
-                    <button
-                        className="p-1 hover:bg-gray-700 rounded"
-                        title={t('fileExplorer.newFile')}
-                    >
-                        <Plus className="w-4 h-4 text-gray-400" />
+                    <button title={t('fileExplorer.refresh', 'Refresh')}>
+                        <ChevronDown size={16} />
                     </button>
                 </div>
             </div>
-
-            <div className="flex-1 overflow-y-auto">
-                {loading ? (
-                    <div className="p-4 text-center text-gray-400">Loading...</div>
-                ) : files.length === 0 ? (
-                    <div className="p-4 text-center text-gray-400">No files</div>
-                ) : (
-                    renderTree(files)
-                )}
+            <div className="file-tree">
+                {renderTree(fileTree)}
             </div>
 
-            <Menu id="file-menu">
-                <Item onClick={() => console.log('New File')}>
-                    {t('fileExplorer.newFile')}
-                </Item>
-                <Item onClick={() => console.log('New Folder')}>
-                    {t('fileExplorer.newFolder')}
-                </Item>
-                <Item onClick={() => console.log('Rename')}>
-                    {t('fileExplorer.rename')}
-                </Item>
-                <Item onClick={() => console.log('Delete')}>
-                    {t('fileExplorer.delete')}
-                </Item>
-            </Menu>
+            {/* Context Menu */}
+            {contextMenu && (
+                <div
+                    className="context-menu"
+                    style={{ top: contextMenu.y, left: contextMenu.x }}
+                >
+                    <div className="context-menu-item">
+                        <Edit3 size={14} /> {t('fileExplorer.rename', 'Rename')}
+                    </div>
+                    <div className="context-menu-item">
+                        <Trash2 size={14} /> {t('fileExplorer.delete', 'Delete')}
+                    </div>
+                    <div className="context-menu-divider"></div>
+                    <div className="context-menu-item">
+                        <Plus size={14} /> {t('fileExplorer.newFile', 'New File')}
+                    </div>
+                    <div className="context-menu-item">
+                        <Folder size={14} /> {t('fileExplorer.newFolder', 'New Folder')}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
