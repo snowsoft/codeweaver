@@ -1,0 +1,38 @@
+appId: com.snowsoft.codeweaver
+productName: CodeWeaver
+directories:
+  output: dist
+  buildResources: build
+files:
+  - dist/**/*
+  - electron/**/*
+  - resources/**/*
+extraResources:
+  - from: resources/binaries/${os}
+    to: binaries
+    filter:
+      - "**/*"
+mac:
+  category: public.app-category.developer-tools
+  icon: resources/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize:
+    teamId: ${APPLE_TEAM_ID}
+win:
+  target:
+    - nsis
+    - portable
+  icon: resources/icon.ico
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+  category: Development
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
