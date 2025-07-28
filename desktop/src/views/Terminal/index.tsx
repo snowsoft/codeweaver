@@ -70,6 +70,14 @@ const TerminalView: React.FC = () => {
                 terminal.writeln('  pwd                 - Print working directory');
                 terminal.writeln('  ls                  - List files');
                 terminal.writeln('  weaver [command]    - Run Weaver CLI commands');
+                terminal.writeln('');
+                terminal.writeln('Weaver commands:');
+                terminal.writeln('  weaver new          - Create new code files');
+                terminal.writeln('  weaver refactor     - Refactor existing code');
+                terminal.writeln('  weaver document     - Add documentation');
+                terminal.writeln('  weaver test         - Generate tests');
+                terminal.writeln('  weaver review       - Code analysis');
+                terminal.writeln('  weaver template     - Work with templates');
                 break;
 
             case 'clear':
@@ -94,28 +102,85 @@ const TerminalView: React.FC = () => {
 
             case 'weaver':
                 if (args.length === 1) {
-                    terminal.writeln('Weaver CLI v1.0.0');
-                    terminal.writeln('Usage: weaver [command] [options]');
+                    terminal.writeln('CodeWeaver CLI v1.0.0');
+                    terminal.writeln('AI destekli kod üretim ve dönüşüm aracı');
                     terminal.writeln('');
-                    terminal.writeln('Commands:');
-                    terminal.writeln('  new <file>      Create new code file');
-                    terminal.writeln('  refactor <file> Refactor existing code');
-                    terminal.writeln('  document <file> Add documentation');
-                    terminal.writeln('  test <file>     Generate tests');
-                    terminal.writeln('  review <file>   Review code');
+                    terminal.writeln('Kullanım: weaver [komut] [seçenekler]');
+                    terminal.writeln('');
+                    terminal.writeln('Komutlar:');
+                    terminal.writeln('  new <dosya>         Yeni kod dosyası oluştur');
+                    terminal.writeln('  refactor <dosya>    Mevcut kodu iyileştir');
+                    terminal.writeln('  document <dosya>    Dokümantasyon ekle');
+                    terminal.writeln('  test <dosya>        Test oluştur');
+                    terminal.writeln('  review <dosya>      Kod analizi yap');
+                    terminal.writeln('  heal-project        Proje sorunlarını tespit et');
+                    terminal.writeln('  template            Template işlemleri');
+                    terminal.writeln('  ask "<soru>"        Doğal dilde sorgula');
+                    terminal.writeln('');
+                    terminal.writeln('Detaylı bilgi için: weaver [komut] --help');
                 } else {
-                    terminal.writeln(`Running: weaver ${args.slice(1).join(' ')}`);
-                    setTimeout(() => {
-                        terminal.writeln('✓ Command executed successfully');
-                        terminal.write('$ ');
-                    }, 1000);
-                    return;
+                    const subCmd = args[1];
+
+                    // Simüle edilmiş Weaver komutları
+                    switch (subCmd) {
+                        case 'new':
+                            if (args.includes('--help')) {
+                                terminal.writeln('Kullanım: weaver new <dosya_adı> --task <açıklama>');
+                                terminal.writeln('');
+                                terminal.writeln('Sıfırdan yeni kod dosyaları oluşturur.');
+                                terminal.writeln('');
+                                terminal.writeln('Seçenekler:');
+                                terminal.writeln('  --task          Oluşturulacak kodun açıklaması');
+                                terminal.writeln('  --context-file  Referans dosya');
+                                terminal.writeln('');
+                                terminal.writeln('Örnekler:');
+                                terminal.writeln('  weaver new user_service.py --task "Create CRUD operations"');
+                                terminal.writeln('  weaver new Button.tsx --task "Create reusable button"');
+                            } else {
+                                terminal.writeln('🤖 AI ile kod üretiliyor...');
+                                setTimeout(() => {
+                                    terminal.writeln('✓ Dosya başarıyla oluşturuldu!');
+                                    terminal.write('$ ');
+                                }, 1500);
+                                return;
+                            }
+                            break;
+
+                        case 'refactor':
+                            terminal.writeln('🔧 Kod iyileştiriliyor...');
+                            setTimeout(() => {
+                                terminal.writeln('✓ Refactoring tamamlandı!');
+                                terminal.write('$ ');
+                            }, 1500);
+                            return;
+
+                        case 'template':
+                            if (args[2] === 'list') {
+                                terminal.writeln('Mevcut template\'ler:');
+                                terminal.writeln('  • laravel         - Full-Stack Laravel Uygulaması');
+                                terminal.writeln('  • laravel-api     - API-Only Laravel');
+                                terminal.writeln('  • react-app       - Modern React Uygulaması');
+                                terminal.writeln('  • python-cli      - Python CLI Uygulaması');
+                                terminal.writeln('  • go-api          - Go REST API');
+                            } else {
+                                terminal.writeln('Kullanım: weaver template [list|use|save|info]');
+                            }
+                            break;
+
+                        default:
+                            terminal.writeln(`⚡ ${args.join(' ')} komutu çalıştırılıyor...`);
+                            setTimeout(() => {
+                                terminal.writeln('✓ İşlem tamamlandı!');
+                                terminal.write('$ ');
+                            }, 1000);
+                            return;
+                    }
                 }
                 break;
 
             default:
-                terminal.writeln(`Command not found: ${cmd}`);
-                terminal.writeln('Type "help" for available commands');
+                terminal.writeln(`Komut bulunamadı: ${cmd}`);
+                terminal.writeln('Yardım için "help" yazın');
                 break;
         }
     };
