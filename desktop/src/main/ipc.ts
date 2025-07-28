@@ -38,45 +38,41 @@ export function setupIPC() {
     });
 
     ipcMain.handle('file:list', async (_, dirPath: string) => {
-        try {
-            const items = await fs.readdir(dirPath, { withFileTypes: true });
-            const files = await Promise.all(
-                items.map(async (item) => {
-                    const fullPath = path.join(dirPath, item.name);
-                    const isDirectory = item.isDirectory();
-
-                    let children = undefined;
-                    if (isDirectory) {
-                        try {
-                            const subItems = await fs.readdir(fullPath, { withFileTypes: true });
-                            children = subItems.map(subItem => ({
-                                name: subItem.name,
-                                path: path.join(fullPath, subItem.name),
-                                type: subItem.isDirectory() ? 'directory' : 'file'
-                            }));
-                        } catch {
-                            children = [];
-                        }
-                    }
-
-                    return {
-                        name: item.name,
+        const readRecursive = async (p: string): Promise<any[]> => {
+            try {
+                const entries = await fs.readdir(p, { withFileTypes: true });
+                return Promise.all(entries.map(async (entry) => {
+                    const fullPath = path.join(p, entry.name);
+                    const node: any = {
+                        name: entry.name,
                         path: fullPath,
-                        type: isDirectory ? 'directory' : 'file',
-                        children
+                        type: entry.isDirectory() ? 'directory' : 'file'
                     };
-                })
-            );
+                    if (entry.isDirectory()) {
+                        node.children = await readRecursive(fullPath);
+                    }
+                    return node;
+                }));
+            } catch {
+                return [];
+            }
+        };
 
+        try {
+            const files = await readRecursive(dirPath);
             return { success: true, files };
         } catch (error) {
             return { success: false, error: (error as Error).message };
         }
     });
 
-    ipcMain.handle('file:create', async (_, filePath: string) => {
+    ipcMain.handle('file:create', async (_, filePath: string, isDir?: boolean) => {
         try {
-            await fs.writeFile(filePath, '', 'utf-8');
+            if (isDir) {
+                await fs.mkdir(filePath, { recursive: true });
+            } else {
+                await fs.writeFile(filePath, '', 'utf-8');
+            }
             return { success: true };
         } catch (error) {
             return { success: false, error: (error as Error).message };

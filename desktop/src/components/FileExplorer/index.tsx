@@ -25,6 +25,17 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     const [isCreating, setIsCreating] = useState<{ type: 'file' | 'folder'; path: string } | null>(null);
     const [newItemName, setNewItemName] = useState('');
 
+    const fetchFileTree = async () => {
+        try {
+            const result = await window.api.file.list(rootPath);
+            if (result.success && Array.isArray(result.files)) {
+                setFileTree(result.files);
+            }
+        } catch (err) {
+            console.error('Error loading file tree:', err);
+        }
+    };
+
     // Dosya uzantısına göre ikon seçimi
     const getFileIcon = (fileName: string) => {
         const ext = fileName.split('.').pop()?.toLowerCase();
@@ -117,20 +128,18 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         setContextMenu(null);
     };
 
-    const handleCreateItem = () => {
+    const handleCreateItem = async () => {
         if (!newItemName.trim() || !isCreating) return;
 
         const fullPath = isCreating.path ? `${isCreating.path}/${newItemName}` : newItemName;
 
-        // Demo için dosya ağacına ekle
-        const newItem: FileNode = {
-            name: newItemName,
-            path: fullPath,
-            type: isCreating.type === 'file' ? 'file' : 'directory',
-            children: isCreating.type === 'folder' ? [] : undefined
-        };
+        try {
+            await window.api.file.create(fullPath, isCreating.type === 'folder');
+            await fetchFileTree();
+        } catch (err) {
+            console.error('Error creating item:', err);
+        }
 
-        setFileTree(prev => [...prev, newItem]);
         setIsCreating(null);
         setNewItemName('');
     };
@@ -140,10 +149,27 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         setNewItemName('');
     };
 
-    const handleDelete = (path: string) => {
-        console.log('Would delete:', path);
-        setFileTree(prev => prev.filter(item => item.path !== path));
+    const handleDelete = async (path: string) => {
+        try {
+            await window.api.file.delete(path);
+            await fetchFileTree();
+        } catch (err) {
+            console.error('Error deleting:', err);
+        }
         setContextMenu(null);
+    };
+
+    const handleRename = async (oldPath: string) => {
+        const name = oldPath.split('/').pop() || oldPath;
+        const newName = prompt('Rename to:', name);
+        if (!newName || newName === name) return;
+        const newPath = oldPath.replace(/[^/]*$/, newName);
+        try {
+            await window.api.file.rename(oldPath, newPath);
+            await fetchFileTree();
+        } catch (err) {
+            console.error('Error renaming:', err);
+        }
     };
 
     // Dosya ağacı render
@@ -195,31 +221,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         });
     };
 
-    // Demo dosya ağacı
+    // Dosya ağacını yükle
     useEffect(() => {
-        setFileTree([
-            {
-                name: 'src',
-                path: 'src',
-                type: 'directory',
-                children: [
-                    {
-                        name: 'components',
-                        path: 'src/components',
-                        type: 'directory',
-                        children: [
-                            { name: 'Button.tsx', path: 'src/components/Button.tsx', type: 'file' },
-                            { name: 'Input.tsx', path: 'src/components/Input.tsx', type: 'file' }
-                        ]
-                    },
-                    { name: 'App.tsx', path: 'src/App.tsx', type: 'file' },
-                    { name: 'main.tsx', path: 'src/main.tsx', type: 'file' }
-                ]
-            },
-            { name: 'package.json', path: 'package.json', type: 'file' },
-            { name: 'README.md', path: 'README.md', type: 'file' }
-        ]);
-    }, []);
+        fetchFileTree();
+    }, [rootPath]);
 
     // Context menüyü kapat
     useEffect(() => {
@@ -298,6 +303,13 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                     className="context-menu"
                     style={{ top: contextMenu.y, left: contextMenu.x }}
                 >
+                    <div className="context-menu-item" onClick={() => handleRename(contextMenu.path)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+                        </svg>
+                        <span>Rename</span>
+                    </div>
                     <div className="context-menu-item" onClick={() => handleDelete(contextMenu.path)}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <polyline points="3 6 5 6 21 6"></polyline>
