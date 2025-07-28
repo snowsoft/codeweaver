@@ -3,6 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './FileExplorer.css';
 
+// Optional window api typing for non-electron environments
+declare global {
+    interface Window {
+        api?: {
+            file?: {
+                list: (dirPath: string) => Promise<{ success: boolean; files?: any[] }>;
+                create: (filePath: string, isDir?: boolean) => Promise<{ success: boolean }>;
+                delete: (filePath: string) => Promise<{ success: boolean }>;
+                rename: (oldPath: string, newPath: string) => Promise<{ success: boolean }>;
+            };
+        };
+    }
+}
+
 interface FileNode {
     name: string;
     path: string;
@@ -27,6 +41,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
 
     const fetchFileTree = async () => {
         try {
+            if (!window.api?.file?.list) {
+                console.warn('File API not available');
+                return;
+            }
             const result = await window.api.file.list(rootPath);
             if (result.success && Array.isArray(result.files)) {
                 setFileTree(result.files);
@@ -134,6 +152,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         const fullPath = isCreating.path ? `${isCreating.path}/${newItemName}` : newItemName;
 
         try {
+            if (!window.api?.file?.create) {
+                console.warn('File API not available');
+                return;
+            }
             await window.api.file.create(fullPath, isCreating.type === 'folder');
             await fetchFileTree();
         } catch (err) {
@@ -151,6 +173,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
 
     const handleDelete = async (path: string) => {
         try {
+            if (!window.api?.file?.delete) {
+                console.warn('File API not available');
+                return;
+            }
             await window.api.file.delete(path);
             await fetchFileTree();
         } catch (err) {
@@ -165,6 +191,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         if (!newName || newName === name) return;
         const newPath = oldPath.replace(/[^/]*$/, newName);
         try {
+            if (!window.api?.file?.rename) {
+                console.warn('File API not available');
+                return;
+            }
             await window.api.file.rename(oldPath, newPath);
             await fetchFileTree();
         } catch (err) {
