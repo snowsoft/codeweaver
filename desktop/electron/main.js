@@ -209,6 +209,27 @@ ipcMain.handle('run-command', async (event, command, cwd) => {
     }
 });
 
+// Git status
+ipcMain.handle('git-status', async () => {
+    try {
+        const { stdout } = await execPromise('git status --porcelain', {
+            cwd: projectRoot,
+            encoding: 'utf-8'
+        });
+        const status = {};
+        stdout.split('\n').forEach(line => {
+            if (!line.trim()) return;
+            const code = line.slice(0, 2).trim();
+            const file = line.slice(3).trim();
+            status[file] = code;
+        });
+        return status;
+    } catch (error) {
+        console.error('Error getting git status:', error);
+        return {};
+    }
+});
+
 // Weaver CLI komutları
 ipcMain.handle('weaver-new', async (event, fileName, task, contextFile) => {
     try {

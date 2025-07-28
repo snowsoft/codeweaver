@@ -38,6 +38,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; path: string } | null>(null);
     const [isCreating, setIsCreating] = useState<{ type: 'file' | 'folder'; path: string } | null>(null);
     const [newItemName, setNewItemName] = useState('');
+    const [gitStatus, setGitStatus] = useState<Record<string, string>>({});
 
     const fetchFileTree = async () => {
         try {
@@ -51,6 +52,19 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             }
         } catch (err) {
             console.error('Error loading file tree:', err);
+        }
+    };
+
+    const fetchGitStatus = async () => {
+        try {
+            if (window.api?.gitStatus) {
+                const status = await window.api.gitStatus();
+                if (status && typeof status === 'object') {
+                    setGitStatus(status);
+                }
+            }
+        } catch (err) {
+            console.error('Error getting git status:', err);
         }
     };
 
@@ -97,6 +111,14 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         if (textExtensions.includes(ext || '')) return textIcon;
         if (imageExtensions.includes(ext || '')) return imageIcon;
         return defaultIcon;
+    };
+
+    const getStatusClass = (code: string) => {
+        if (!code) return '';
+        if (code.includes('A') || code.includes('??')) return 'added';
+        if (code.includes('M')) return 'modified';
+        if (code.includes('D')) return 'deleted';
+        return '';
     };
 
     // Klasör aç/kapa
@@ -158,6 +180,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             }
             await window.api.file.create(fullPath, isCreating.type === 'folder');
             await fetchFileTree();
+            await fetchGitStatus();
         } catch (err) {
             console.error('Error creating item:', err);
         }
@@ -179,6 +202,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             }
             await window.api.file.delete(path);
             await fetchFileTree();
+            await fetchGitStatus();
         } catch (err) {
             console.error('Error deleting:', err);
         }
@@ -197,6 +221,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             }
             await window.api.file.rename(oldPath, newPath);
             await fetchFileTree();
+            await fetchGitStatus();
         } catch (err) {
             console.error('Error renaming:', err);
         }
@@ -242,6 +267,9 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                             </>
                         )}
                         <span className="file-name">{node.name}</span>
+                        {node.type === 'file' && gitStatus[node.path] && (
+                            <span className={`status-dot ${getStatusClass(gitStatus[node.path])}`}></span>
+                        )}
                     </div>
                     {node.type === 'directory' && isExpanded && node.children && (
                         <div>{renderTree(node.children, level + 1)}</div>
@@ -251,9 +279,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         });
     };
 
-    // Dosya ağacını yükle
+    // Dosya ağacını ve git durumunu yükle
     useEffect(() => {
         fetchFileTree();
+        fetchGitStatus();
     }, [rootPath]);
 
     // Context menüyü kapat
