@@ -4,15 +4,6 @@ import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { useTranslation } from 'react-i18next';
-import {
-    Terminal as TerminalIcon,
-    Plus,
-    X,
-    Trash2,
-    SplitSquareVertical,
-    Maximize2,
-    Minimize2
-} from 'lucide-react';
 import 'xterm/css/xterm.css';
 import './Terminal.css';
 
@@ -21,7 +12,9 @@ interface TerminalTab {
     name: string;
     terminal: XTerm;
     fitAddon: FitAddon;
-    isActive: boolean;
+    currentLine: string;
+    history: string[];
+    historyIndex: number;
 }
 
 const TerminalView: React.FC = () => {
@@ -29,9 +22,6 @@ const TerminalView: React.FC = () => {
     const terminalContainerRef = useRef<HTMLDivElement>(null);
     const [terminals, setTerminals] = useState<TerminalTab[]>([]);
     const [activeTerminalId, setActiveTerminalId] = useState<string | null>(null);
-    const [isMaximized, setIsMaximized] = useState(false);
-    const [terminalHeight, setTerminalHeight] = useState(300);
-    const currentTerminalRef = useRef<TerminalTab | null>(null);
 
     // Terminal teması
     const getTerminalTheme = () => {
@@ -61,6 +51,72 @@ const TerminalView: React.FC = () => {
         };
     };
 
+    // Komut işleyici
+    const processCommand = (terminal: XTerm, command: string): void => {
+        const args = command.trim().split(' ');
+        const cmd = args[0].toLowerCase();
+
+        terminal.write('\r\n');
+
+        switch (cmd) {
+            case '':
+                break;
+
+            case 'help':
+                terminal.writeln('Available commands:');
+                terminal.writeln('  help                - Show this help message');
+                terminal.writeln('  clear               - Clear the terminal');
+                terminal.writeln('  echo [text]         - Display text');
+                terminal.writeln('  date                - Show current date and time');
+                terminal.writeln('  pwd                 - Print working directory');
+                terminal.writeln('  ls                  - List files (simulated)');
+                terminal.writeln('  weaver [command]    - Run Weaver CLI commands');
+                break;
+
+            case 'clear':
+                terminal.clear();
+                break;
+
+            case 'echo':
+                terminal.writeln(args.slice(1).join(' '));
+                break;
+
+            case 'date':
+                terminal.writeln(new Date().toString());
+                break;
+
+            case 'pwd':
+                terminal.writeln('/home/user/project');
+                break;
+
+            case 'ls':
+                terminal.writeln('src/  package.json  README.md  node_modules/');
+                break;
+
+            case 'weaver':
+                if (args.length === 1) {
+                    terminal.writeln('Weaver CLI v1.0.0');
+                    terminal.writeln('Usage: weaver [command] [options]');
+                    terminal.writeln('');
+                    terminal.writeln('Commands:');
+                    terminal.writeln('  new <file>      Create new code file');
+                    terminal.writeln('  refactor <file> Refactor existing code');
+                    terminal.writeln('  document <file> Add documentation');
+                    terminal.writeln('  test <file>     Generate tests');
+                    terminal.writeln('  review <file>   Review code');
+                } else {
+                    terminal.writeln(`Running: weaver ${args.slice(1).join(' ')}`);
+                    terminal.writeln('✓ Command executed successfully');
+                }
+                break;
+
+            default:
+                terminal.writeln(`Command not found: ${cmd}`);
+                terminal.writeln('Type "help" for available commands');
+                break;
+        }
+    };
+
     // Yeni terminal oluştur
     const createNewTerminal = () => {
         const terminal = new XTerm({
@@ -70,8 +126,7 @@ const TerminalView: React.FC = () => {
             cursorBlink: true,
             cursorStyle: 'block',
             scrollback: 10000,
-            tabStopWidth: 4,
-            windowsMode: process.platform === 'win32'
+            tabStopWidth: 4
         });
 
         const fitAddon = new FitAddon();
@@ -85,11 +140,12 @@ const TerminalView: React.FC = () => {
             name: `Terminal ${terminals.length + 1}`,
             terminal,
             fitAddon,
-            isActive: true
+            currentLine: '',
+            history: [],
+            historyIndex: -1
         };
 
         // Diğer terminalleri deaktif et
-        setTerminals(prev => prev.map(t => ({ ...t, isActive: false })));
         setTerminals(prev => [...prev, newTab]);
         setActiveTerminalId(newTab.id);
 
@@ -99,10 +155,6 @@ const TerminalView: React.FC = () => {
     // Terminal sekmesine geç
     const switchToTerminal = (terminalId: string) => {
         setActiveTerminalId(terminalId);
-        setTerminals(prev => prev.map(t => ({
-            ...t,
-            isActive: t.id === terminalId
-        })));
     };
 
     // Terminali kapat
@@ -140,7 +192,11 @@ const TerminalView: React.FC = () => {
     const handleResize = () => {
         terminals.forEach(tab => {
             if (tab.fitAddon) {
-                tab.fitAddon.fit();
+                try {
+                    tab.fitAddon.fit();
+                } catch (e) {
+                    console.error('Fit error:', e);
+                }
             }
         });
     };
@@ -154,25 +210,75 @@ const TerminalView: React.FC = () => {
             setTimeout(() => {
                 if (terminalContainerRef.current && newTerminal) {
                     const terminalElement = terminalContainerRef.current.querySelector('.terminal-content');
-                    if (terminalElement) {
+                    if (terminalElement && !terminalElement.hasChildNodes()) {
                         newTerminal.terminal.open(terminalElement as HTMLElement);
                         newTerminal.fitAddon.fit();
 
                         // Hoş geldin mesajı
                         newTerminal.terminal.writeln('CodeWeaver Terminal v1.0.0');
-                        newTerminal.terminal.writeln('-----------------------------');
+                        newTerminal.terminal.writeln('Type "help" for available commands');
                         newTerminal.terminal.writeln('');
                         newTerminal.terminal.write('$ ');
 
                         // Input handling
+                        let currentLine = '';
+                        let history: string[] = [];
+                        let historyIndex = -1;
+
                         newTerminal.terminal.onData((data) => {
-                            // Basit echo için - gerçek uygulamada IPC ile shell'e gönderilecek
-                            if (data === '\r') { // Enter
-                                newTerminal.terminal.write('\r\n$ ');
-                            } else if (data === '\u007F') { // Backspace
-                                newTerminal.terminal.write('\b \b');
-                            } else {
-                                newTerminal.terminal.write(data);
+                            const term = newTerminal.terminal;
+
+                            switch (data) {
+                                case '\r': // Enter
+                                    if (currentLine.trim()) {
+                                        history.push(currentLine);
+                                        historyIndex = history.length;
+                                    }
+                                    processCommand(term, currentLine);
+                                    currentLine = '';
+                                    term.write('$ ');
+                                    break;
+
+                                case '\u007F': // Backspace
+                                    if (currentLine.length > 0) {
+                                        currentLine = currentLine.slice(0, -1);
+                                        term.write('\b \b');
+                                    }
+                                    break;
+
+                                case '\u001b[A': // Up arrow
+                                    if (historyIndex > 0) {
+                                        // Clear current line
+                                        term.write('\r\x1b[K$ ');
+                                        historyIndex--;
+                                        currentLine = history[historyIndex];
+                                        term.write(currentLine);
+                                    }
+                                    break;
+
+                                case '\u001b[B': // Down arrow
+                                    if (historyIndex < history.length - 1) {
+                                        term.write('\r\x1b[K$ ');
+                                        historyIndex++;
+                                        currentLine = history[historyIndex];
+                                        term.write(currentLine);
+                                    } else if (historyIndex === history.length - 1) {
+                                        term.write('\r\x1b[K$ ');
+                                        historyIndex = history.length;
+                                        currentLine = '';
+                                    }
+                                    break;
+
+                                case '\u0003': // Ctrl+C
+                                    term.write('^C\r\n$ ');
+                                    currentLine = '';
+                                    break;
+
+                                default:
+                                    if (data >= String.fromCharCode(0x20) && data <= String.fromCharCode(0x7e)) {
+                                        currentLine += data;
+                                        term.write(data);
+                                    }
                             }
                         });
                     }
@@ -186,16 +292,18 @@ const TerminalView: React.FC = () => {
         if (activeTerminalId && terminalContainerRef.current) {
             const activeTerminal = terminals.find(t => t.id === activeTerminalId);
             if (activeTerminal) {
-                currentTerminalRef.current = activeTerminal;
+                // Tüm terminalleri gizle
+                const allTerminals = terminalContainerRef.current.querySelectorAll('.xterm');
+                allTerminals.forEach(el => {
+                    (el as HTMLElement).style.display = 'none';
+                });
 
-                // Terminal içeriğini göster
-                setTimeout(() => {
-                    const terminalElement = terminalContainerRef.current?.querySelector('.terminal-content');
-                    if (terminalElement && !terminalElement.firstChild) {
-                        activeTerminal.terminal.open(terminalElement as HTMLElement);
-                        activeTerminal.fitAddon.fit();
-                    }
-                }, 0);
+                // Aktif terminali göster
+                const activeElement = terminalContainerRef.current.querySelector(`[data-terminal-id="${activeTerminalId}"] .xterm`);
+                if (activeElement) {
+                    (activeElement as HTMLElement).style.display = 'block';
+                    activeTerminal.fitAddon.fit();
+                }
             }
         }
     }, [activeTerminalId, terminals]);
@@ -220,24 +328,32 @@ const TerminalView: React.FC = () => {
     }, [terminals]);
 
     return (
-        <div className={`terminal-container ${isMaximized ? 'maximized' : ''}`} style={{ height: isMaximized ? '100%' : `${terminalHeight}px` }}>
+        <div className="terminal-container">
             <div className="terminal-header">
                 <div className="terminal-tabs">
                     {terminals.map(tab => (
                         <div
                             key={tab.id}
-                            className={`terminal-tab ${tab.isActive ? 'active' : ''}`}
+                            className={`terminal-tab ${tab.id === activeTerminalId ? 'active' : ''}`}
                             onClick={() => switchToTerminal(tab.id)}
                         >
-                            <TerminalIcon size={14} />
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="4 17 10 11 4 5"></polyline>
+                                <line x1="12" y1="19" x2="20" y2="19"></line>
+                            </svg>
                             <span>{tab.name}</span>
-                            <button
-                                className="terminal-tab-close"
-                                onClick={(e) => closeTerminal(tab.id, e)}
-                                title={t('terminal.close', 'Close')}
-                            >
-                                <X size={12} />
-                            </button>
+                            {terminals.length > 1 && (
+                                <button
+                                    className="terminal-tab-close"
+                                    onClick={(e) => closeTerminal(tab.id, e)}
+                                    title={t('terminal.close', 'Close')}
+                                >
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            )}
                         </div>
                     ))}
                     <button
@@ -245,7 +361,10 @@ const TerminalView: React.FC = () => {
                         onClick={createNewTerminal}
                         title={t('terminal.new', 'New Terminal')}
                     >
-                        <Plus size={14} />
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
                     </button>
                 </div>
 
@@ -255,43 +374,24 @@ const TerminalView: React.FC = () => {
                         title={t('terminal.clear', 'Clear')}
                         className="terminal-action-btn"
                     >
-                        <Trash2 size={16} />
-                    </button>
-                    <button
-                        onClick={() => setIsMaximized(!isMaximized)}
-                        title={isMaximized ? t('terminal.minimize', 'Minimize') : t('terminal.maximize', 'Maximize')}
-                        className="terminal-action-btn"
-                    >
-                        {isMaximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
 
-            <div
-                className="terminal-resize-handle"
-                onMouseDown={(e) => {
-                    const startY = e.clientY;
-                    const startHeight = terminalHeight;
-
-                    const handleMouseMove = (e: MouseEvent) => {
-                        const deltaY = startY - e.clientY;
-                        const newHeight = Math.max(150, Math.min(600, startHeight + deltaY));
-                        setTerminalHeight(newHeight);
-                        handleResize();
-                    };
-
-                    const handleMouseUp = () => {
-                        document.removeEventListener('mousemove', handleMouseMove);
-                        document.removeEventListener('mouseup', handleMouseUp);
-                    };
-
-                    document.addEventListener('mousemove', handleMouseMove);
-                    document.addEventListener('mouseup', handleMouseUp);
-                }}
-            />
-
             <div ref={terminalContainerRef} className="terminal-content-wrapper">
-                <div className="terminal-content"></div>
+                {terminals.map(tab => (
+                    <div
+                        key={tab.id}
+                        data-terminal-id={tab.id}
+                        style={{ display: tab.id === activeTerminalId ? 'block' : 'none', height: '100%' }}
+                    >
+                        <div className="terminal-content"></div>
+                    </div>
+                ))}
             </div>
         </div>
     );
