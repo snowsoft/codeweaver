@@ -16,6 +16,7 @@ export interface ElectronAPI {
     renameFile: (oldPath: string, newPath: string) => Promise<void>;
     openProject: () => Promise<string | null>;
     runCommand: (command: string, cwd?: string) => Promise<{ stdout: string; stderr: string }>;
+    gitStatus: () => Promise<Record<string, string>>;
     onFileChange: (callback: (event: any, data: any) => void) => () => void;
     onCommandOutput: (callback: (event: any, data: any) => void) => () => void;
 }

@@ -41,8 +41,11 @@ contextBridge.exposeInMainWorld('electron', {
         ipcRenderer.invoke('weaver-document', fileName, style),
     weaverTest: (fileName, framework) =>
         ipcRenderer.invoke('weaver-test', fileName, framework),
-    weaverReview: (fileName, task) =>
+  weaverReview: (fileName, task) =>
         ipcRenderer.invoke('weaver-review', fileName, task),
+
+    // Git status
+    gitStatus: () => ipcRenderer.invoke('git-status'),
 
     // Event listeners
     onFileChange: (callback) => {
@@ -74,6 +77,7 @@ export interface ElectronAPI {
   weaverDocument: (fileName: string, style?: string) => Promise<string>;
   weaverTest: (fileName: string, framework?: string) => Promise<string>;
   weaverReview: (fileName: string, task?: string) => Promise<string>;
+  gitStatus: () => Promise<Record<string, string>>;
   onFileChange: (callback: (event: any, data: any) => void) => () => void;
   onCommandOutput: (callback: (event: any, data: any) => void) => () => void;
 }
