@@ -22,6 +22,8 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
     const [selectedFile, setSelectedFile] = useState<string>('');
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; path: string } | null>(null);
+    const [isCreating, setIsCreating] = useState<{ type: 'file' | 'folder'; path: string } | null>(null);
+    const [newItemName, setNewItemName] = useState('');
 
     // Dosya uzantısına göre ikon seçimi
     const getFileIcon = (fileName: string) => {
@@ -40,7 +42,6 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
                 <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
         );
 
@@ -52,14 +53,6 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             </svg>
         );
 
-        const archiveIcon = (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="21 8 21 21 3 21 3 8"></polyline>
-                <rect x="1" y="3" width="22" height="5"></rect>
-                <line x1="10" y1="12" x2="14" y2="12"></line>
-            </svg>
-        );
-
         const defaultIcon = (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
@@ -67,37 +60,14 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             </svg>
         );
 
-        switch (ext) {
-            case 'js':
-            case 'jsx':
-            case 'ts':
-            case 'tsx':
-            case 'py':
-            case 'go':
-            case 'java':
-            case 'cpp':
-            case 'c':
-            case 'php':
-                return codeIcon;
-            case 'md':
-            case 'txt':
-            case 'doc':
-            case 'docx':
-                return textIcon;
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'gif':
-            case 'svg':
-                return imageIcon;
-            case 'zip':
-            case 'tar':
-            case 'gz':
-            case 'rar':
-                return archiveIcon;
-            default:
-                return defaultIcon;
-        }
+        const codeExtensions = ['js', 'jsx', 'ts', 'tsx', 'py', 'go', 'java', 'cpp', 'c', 'php'];
+        const textExtensions = ['md', 'txt', 'doc', 'docx', 'json', 'xml', 'yaml'];
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'bmp'];
+
+        if (codeExtensions.includes(ext || '')) return codeIcon;
+        if (textExtensions.includes(ext || '')) return textIcon;
+        if (imageExtensions.includes(ext || '')) return imageIcon;
+        return defaultIcon;
     };
 
     // Klasör aç/kapa
@@ -115,9 +85,14 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
 
     // Dosya seçimi
     const handleFileClick = (node: FileNode) => {
+        console.log('File clicked:', node);
+
         if (node.type === 'file') {
             setSelectedFile(node.path);
-            onFileSelect?.(node.path);
+            if (onFileSelect) {
+                console.log('Calling onFileSelect with:', node.path);
+                onFileSelect(node.path);
+            }
         } else {
             toggleFolder(node.path);
         }
@@ -127,6 +102,48 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     const handleContextMenu = (e: React.MouseEvent, path: string) => {
         e.preventDefault();
         setContextMenu({ x: e.clientX, y: e.clientY, path });
+    };
+
+    // Yeni dosya/klasör oluşturma
+    const handleNewFile = (parentPath: string = '') => {
+        setIsCreating({ type: 'file', path: parentPath });
+        setNewItemName('');
+        setContextMenu(null);
+    };
+
+    const handleNewFolder = (parentPath: string = '') => {
+        setIsCreating({ type: 'folder', path: parentPath });
+        setNewItemName('');
+        setContextMenu(null);
+    };
+
+    const handleCreateItem = () => {
+        if (!newItemName.trim() || !isCreating) return;
+
+        const fullPath = isCreating.path ? `${isCreating.path}/${newItemName}` : newItemName;
+
+        // Demo için dosya ağacına ekle
+        const newItem: FileNode = {
+            name: newItemName,
+            path: fullPath,
+            type: isCreating.type === 'file' ? 'file' : 'directory',
+            children: isCreating.type === 'folder' ? [] : undefined
+        };
+
+        setFileTree(prev => [...prev, newItem]);
+        setIsCreating(null);
+        setNewItemName('');
+    };
+
+    const handleCancelCreate = () => {
+        setIsCreating(null);
+        setNewItemName('');
+    };
+
+    const handleDelete = (path: string) => {
+        console.log('Would delete:', path);
+        setFileTree(prev => prev.filter(item => item.path !== path));
+        setContextMenu(null);
     };
 
     // Dosya ağacı render
@@ -157,17 +174,9 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                   )}
                 </span>
                                 <span className="file-icon">
-                  {isExpanded ? (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                          <line x1="10" y1="13" x2="10" y2="17"></line>
-                          <line x1="14" y1="13" x2="14" y2="17"></line>
-                      </svg>
-                  ) : (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                      </svg>
-                  )}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
                 </span>
                             </>
                         ) : (
@@ -186,45 +195,31 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         });
     };
 
-    // Electron IPC ile dosya sistemi okuma
+    // Demo dosya ağacı
     useEffect(() => {
-        const loadFileTree = async () => {
-            if (window.electron) {
-                try {
-                    const tree = await window.electron.readDirectory(rootPath);
-                    setFileTree(tree);
-                } catch (error) {
-                    console.error('Dosya ağacı yüklenemedi:', error);
-                }
-            } else {
-                // Demo veri
-                setFileTree([
+        setFileTree([
+            {
+                name: 'src',
+                path: 'src',
+                type: 'directory',
+                children: [
                     {
-                        name: 'src',
-                        path: '/src',
+                        name: 'components',
+                        path: 'src/components',
                         type: 'directory',
                         children: [
-                            {
-                                name: 'components',
-                                path: '/src/components',
-                                type: 'directory',
-                                children: [
-                                    { name: 'Button.tsx', path: '/src/components/Button.tsx', type: 'file' },
-                                    { name: 'Input.tsx', path: '/src/components/Input.tsx', type: 'file' }
-                                ]
-                            },
-                            { name: 'App.tsx', path: '/src/App.tsx', type: 'file' },
-                            { name: 'main.tsx', path: '/src/main.tsx', type: 'file' }
+                            { name: 'Button.tsx', path: 'src/components/Button.tsx', type: 'file' },
+                            { name: 'Input.tsx', path: 'src/components/Input.tsx', type: 'file' }
                         ]
                     },
-                    { name: 'package.json', path: '/package.json', type: 'file' },
-                    { name: 'README.md', path: '/README.md', type: 'file' }
-                ]);
-            }
-        };
-
-        loadFileTree();
-    }, [rootPath]);
+                    { name: 'App.tsx', path: 'src/App.tsx', type: 'file' },
+                    { name: 'main.tsx', path: 'src/main.tsx', type: 'file' }
+                ]
+            },
+            { name: 'package.json', path: 'package.json', type: 'file' },
+            { name: 'README.md', path: 'README.md', type: 'file' }
+        ]);
+    }, []);
 
     // Context menüyü kapat
     useEffect(() => {
@@ -238,22 +233,62 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             <div className="file-explorer-header">
                 <h3>{t('fileExplorer.title', 'EXPLORER')}</h3>
                 <div className="file-explorer-actions">
-                    <button title={t('fileExplorer.newFile', 'New File')} type="button">
+                    <button
+                        title={t('fileExplorer.newFile', 'New File')}
+                        type="button"
+                        onClick={() => handleNewFile()}
+                    >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
                         </svg>
                     </button>
-                    <button title={t('fileExplorer.refresh', 'Refresh')} type="button">
+                    <button
+                        title={t('fileExplorer.newFolder', 'New Folder')}
+                        type="button"
+                        onClick={() => handleNewFolder()}
+                    >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="23 4 23 10 17 10"></polyline>
-                            <polyline points="1 20 1 14 7 14"></polyline>
-                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            <line x1="12" y1="11" x2="12" y2="17"></line>
+                            <line x1="9" y1="14" x2="15" y2="14"></line>
                         </svg>
                     </button>
                 </div>
             </div>
+
             <div className="file-tree">
+                {isCreating && isCreating.path === '' && (
+                    <div className="file-item creating-item" style={{ paddingLeft: '10px' }}>
+            <span className="file-icon">
+              {isCreating.type === 'file' ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                      <polyline points="13 2 13 9 20 9"></polyline>
+                  </svg>
+              ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+              )}
+            </span>
+                        <input
+                            type="text"
+                            className="new-item-input"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleCreateItem();
+                                if (e.key === 'Escape') handleCancelCreate();
+                            }}
+                            onBlur={handleCreateItem}
+                            autoFocus
+                            placeholder={isCreating.type === 'file' ? 'file.ts' : 'folder-name'}
+                        />
+                    </div>
+                )}
                 {renderTree(fileTree)}
             </div>
 
@@ -263,14 +298,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                     className="context-menu"
                     style={{ top: contextMenu.y, left: contextMenu.x }}
                 >
-                    <div className="context-menu-item">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                        <span>{t('fileExplorer.rename', 'Rename')}</span>
-                    </div>
-                    <div className="context-menu-item">
+                    <div className="context-menu-item" onClick={() => handleDelete(contextMenu.path)}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -278,7 +306,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                         <span>{t('fileExplorer.delete', 'Delete')}</span>
                     </div>
                     <div className="context-menu-divider"></div>
-                    <div className="context-menu-item">
+                    <div className="context-menu-item" onClick={() => handleNewFile(contextMenu.path)}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
                             <polyline points="13 2 13 9 20 9"></polyline>
@@ -287,7 +315,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                         </svg>
                         <span>{t('fileExplorer.newFile', 'New File')}</span>
                     </div>
-                    <div className="context-menu-item">
+                    <div className="context-menu-item" onClick={() => handleNewFolder(contextMenu.path)}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                             <line x1="12" y1="11" x2="12" y2="17"></line>

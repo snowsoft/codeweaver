@@ -12,12 +12,14 @@ import './App.css';
 // Context type for outlet
 interface OutletContextType {
     selectedFile: string | null;
+    editorFiles: string[];
+    setEditorFiles: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 // Editor wrapper to use context
 const EditorWrapper = () => {
-    const { selectedFile } = useOutletContext<OutletContextType>();
-    return <Editor selectedFile={selectedFile} />;
+    const context = useOutletContext<OutletContextType>();
+    return <Editor {...context} />;
 };
 
 function App() {

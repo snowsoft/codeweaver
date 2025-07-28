@@ -24,13 +24,22 @@ interface Tab {
 
 interface EditorProps {
     selectedFile?: string | null;
+    editorFiles?: string[];
+    setEditorFiles?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const EditorView: React.FC<EditorProps> = ({ selectedFile }) => {
+const EditorView: React.FC<EditorProps> = ({ selectedFile, editorFiles = [], setEditorFiles }) => {
     const { t } = useTranslation();
     const [tabs, setTabs] = useState<Tab[]>([]);
     const [activeTabId, setActiveTabId] = useState<string | null>(null);
     const [theme, setTheme] = useState(localStorage.getItem('theme') === 'dark' ? 'vs-dark' : 'vs');
+    const [editorSettings, setEditorSettings] = useState({
+        fontSize: parseInt(localStorage.getItem('editorFontSize') || '14'),
+        tabSize: parseInt(localStorage.getItem('editorTabSize') || '2'),
+        wordWrap: localStorage.getItem('editorWordWrap') || 'on',
+        minimap: localStorage.getItem('editorMinimap') === 'true',
+        lineNumbers: localStorage.getItem('showLineNumbers') !== 'false'
+    });
     const editorRef = useRef<any>(null);
 
     // Dosya uzantısına göre dil belirleme
@@ -122,6 +131,22 @@ const EditorView: React.FC<EditorProps> = ({ selectedFile }) => {
 
         window.addEventListener('storage', handleStorageChange);
         return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
+    // Editor ayarlarını dinle
+    useEffect(() => {
+        const handleEditorSettingsChange = (e: CustomEvent) => {
+            setEditorSettings({
+                fontSize: parseInt(localStorage.getItem('editorFontSize') || '14'),
+                tabSize: parseInt(localStorage.getItem('editorTabSize') || '2'),
+                wordWrap: localStorage.getItem('editorWordWrap') || 'on',
+                minimap: localStorage.getItem('editorMinimap') === 'true',
+                lineNumbers: localStorage.getItem('showLineNumbers') !== 'false'
+            });
+        };
+
+        window.addEventListener('editorSettingsChanged', handleEditorSettingsChange as EventListener);
+        return () => window.removeEventListener('editorSettingsChanged', handleEditorSettingsChange as EventListener);
     }, []);
 
     // Dosya seçildiğinde
@@ -270,18 +295,19 @@ const EditorView: React.FC<EditorProps> = ({ selectedFile }) => {
                             onChange={handleEditorChange}
                             onMount={handleEditorDidMount}
                             options={{
-                                fontSize: 14,
+                                fontSize: editorSettings.fontSize,
                                 fontFamily: 'Consolas, "Courier New", monospace',
-                                minimap: { enabled: true },
+                                minimap: { enabled: editorSettings.minimap },
                                 scrollBeyondLastLine: false,
-                                wordWrap: 'on',
+                                wordWrap: editorSettings.wordWrap as 'on' | 'off',
                                 automaticLayout: true,
                                 formatOnPaste: true,
                                 formatOnType: true,
                                 suggestOnTriggerCharacters: true,
                                 acceptSuggestionOnCommitCharacter: true,
-                                tabSize: 2,
+                                tabSize: editorSettings.tabSize,
                                 insertSpaces: true,
+                                lineNumbers: editorSettings.lineNumbers ? 'on' : 'off',
                                 bracketPairColorization: {
                                     enabled: true,
                                     independentColorPoolPerBracketType: true

@@ -61,10 +61,16 @@
     font-size: 13px;
     white-space: nowrap;
     transition: background-color 0.1s;
+    user-select: none;
 }
 
 .file-item:hover {
     background-color: var(--hover-bg);
+}
+
+.file-item:active {
+    background-color: var(--accent-bg);
+    color: var(--accent-color);
 }
 
 .file-item.selected {

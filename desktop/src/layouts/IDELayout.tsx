@@ -38,6 +38,15 @@ const IDELayout: React.FC = () => {
         }
     }, [location.pathname]);
 
+    // Selected file'ı context'e ekle
+    const [editorFiles, setEditorFiles] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (selectedFile && !editorFiles.includes(selectedFile)) {
+            setEditorFiles(prev => [...prev, selectedFile]);
+        }
+    }, [selectedFile]);
+
     return (
         <div className="ide-layout">
             {/* Header */}
@@ -92,7 +101,7 @@ const IDELayout: React.FC = () => {
                         bottom: isBottomPanelVisible ? `${bottomPanelHeight}px` : '0'
                     }}
                 >
-                    <Outlet context={{ selectedFile }} />
+                    <Outlet context={{ selectedFile, editorFiles, setEditorFiles }} />
                 </div>
 
                 {/* Bottom Panel (Terminal) */}
