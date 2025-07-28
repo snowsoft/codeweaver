@@ -21,7 +21,8 @@ declare global {
                 openDirectory: () => Promise<Electron.OpenDialogReturnValue>
             },
             shell: {
-                openExternal: (url: string) => Promise<void>
+                openExternal: (url: string) => Promise<void>,
+                openPath: (filePath: string) => Promise<void>
             },
             on: (channel: string, callback: (...args: any[]) => void) => void,
             removeAllListeners: (channel: string) => void
@@ -52,9 +53,10 @@ contextBridge.exposeInMainWorld('api', {
     },
 
     // Shell operations
-    shell: {
-        openExternal: (url: string) => ipcRenderer.invoke('shell:openExternal', url)
-    },
+            shell: {
+                openExternal: (url: string) => ipcRenderer.invoke('shell:openExternal', url),
+                openPath: (filePath: string) => ipcRenderer.invoke('shell:openPath', filePath)
+            },
 
     // Menu events
     on: (channel: string, callback: (...args: any[]) => void) => {
