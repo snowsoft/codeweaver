@@ -45,13 +45,18 @@ func runTest(cmd *cobra.Command, args []string) error {
     spinner, err := pterm.DefaultSpinner.Start("Analyzing code for test generation...")
     if err != nil {
         // Continue without spinner
-        pterm.Warning.Println("Failed to start spinner")
+        pterm.Warning.Printf("Failed to start spinner: %v\n", err)
+        spinner = nil
     }
     
     // Read source file
     sourceCode, err := utils.ReadFile(fileName)
     if err != nil {
-        spinner.Fail(fmt.Sprintf("Failed to read file: %v", err))
+        if spinner != nil {
+            spinner.Fail(fmt.Sprintf("Failed to read file: %v", err))
+        } else {
+            pterm.Warning.Printf("Failed to read file: %v\n", err)
+        }
         return err
     }
     
@@ -66,7 +71,11 @@ func runTest(cmd *cobra.Command, args []string) error {
     // Generate test file name
     testFileName := generateTestFileName(fileName, language)
     
-    spinner.UpdateText("Generating unit tests...")
+    if spinner != nil {
+        spinner.UpdateText("Generating unit tests...")
+    } else {
+        pterm.Info.Println("Generating unit tests...")
+    }
     
     // Initialize Ollama client
     client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
@@ -77,11 +86,19 @@ func runTest(cmd *cobra.Command, args []string) error {
     // Generate tests
     testCode, err := client.Generate(cmd.Context(), prompt)
     if err != nil {
-        spinner.Fail(fmt.Sprintf("Failed to generate tests: %v", err))
+        if spinner != nil {
+            spinner.Fail(fmt.Sprintf("Failed to generate tests: %v", err))
+        } else {
+            pterm.Warning.Printf("Failed to generate tests: %v\n", err)
+        }
         return err
     }
-    
-    spinner.Success("Tests generated successfully!")
+
+    if spinner != nil {
+        spinner.Success("Tests generated successfully!")
+    } else {
+        pterm.Info.Println("Tests generated successfully!")
+    }
     
     // Display generated tests
     pterm.DefaultHeader.Println("Generated Tests")
