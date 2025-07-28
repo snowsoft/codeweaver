@@ -45,18 +45,23 @@ func runNew(cmd *cobra.Command, args []string) error {
     spinner, err := pterm.DefaultSpinner.Start("Generating code...")
     if err != nil {
         // Continue without spinner
-        pterm.Warning.Println("Failed to start spinner")
+        pterm.Warning.Printf("Failed to start spinner: %v\n", err)
+        spinner = nil
     }
     
     // Initialize Ollama client
-    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)
+    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
     
     // Prepare context
     var context string
     if newContextFile != "" {
         contextContent, err := utils.ReadFile(newContextFile)
         if err != nil {
-            spinner.Fail(fmt.Sprintf("Failed to read context file: %v", err))
+            if spinner != nil {
+                spinner.Fail(fmt.Sprintf("Failed to read context file: %v", err))
+            } else {
+                pterm.Warning.Printf("Failed to read context file: %v\n", err)
+            }
             return err
         }
         context = fmt.Sprintf("Reference file (%s):\n%s\n\n", newContextFile, contextContent)
@@ -71,11 +76,19 @@ func runNew(cmd *cobra.Command, args []string) error {
     // Generate code
     generatedCode, err := client.Generate(cmd.Context(), prompt)
     if err != nil {
-        spinner.Fail(fmt.Sprintf("Failed to generate code: %v", err))
+        if spinner != nil {
+            spinner.Fail(fmt.Sprintf("Failed to generate code: %v", err))
+        } else {
+            pterm.Warning.Printf("Failed to generate code: %v\n", err)
+        }
         return err
     }
-    
-    spinner.Success("Code generated successfully!")
+
+    if spinner != nil {
+        spinner.Success("Code generated successfully!")
+    } else {
+        pterm.Info.Println("Code generated successfully!")
+    }
     
     // Display generated code
     pterm.DefaultHeader.Println("Generated Code")

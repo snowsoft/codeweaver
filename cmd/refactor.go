@@ -76,7 +76,7 @@ func runRefactor(cmd *cobra.Command, args []string) error {
     spinner.UpdateText("Refactoring code...")
     
     // Initialize Ollama client
-    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)
+    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
     
     // Detect language
     language := utils.DetectLanguage(fileName)
