@@ -32,3 +32,11 @@ npm run dev
 
 # Build for production
 npm run build
+```
+
+# Package the app
+npm run dist
+
+# Run the app
+npm start
+
