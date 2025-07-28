@@ -5,6 +5,7 @@ import (
     "fmt"
     "os"
     "os/exec"
+    "path/filepath"
     "strings"
     
     "github.com/AlecAivazis/survey/v2"
@@ -101,7 +102,12 @@ func OpenEditor(content string) (string, error) {
     }
     
     // Open editor
-    cmd := exec.Command(editor, tmpFile.Name())
+    var cmd *exec.Cmd
+    if filepath.Base(editor) == "code" {
+        cmd = exec.Command(editor, "--wait", tmpFile.Name())
+    } else {
+        cmd = exec.Command(editor, tmpFile.Name())
+    }
     cmd.Stdin = os.Stdin
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
