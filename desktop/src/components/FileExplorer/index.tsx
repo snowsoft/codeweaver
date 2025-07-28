@@ -1,5 +1,6 @@
 // src/components/FileExplorer/index.tsx
 import React, { useState, useEffect } from 'react';
+import { copyToClipboard } from '../../renderer/lib/utils';
 import { useTranslation } from 'react-i18next';
 import './FileExplorer.css';
 
@@ -202,6 +203,29 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         }
     };
 
+    const handleRefresh = async () => {
+        await fetchFileTree();
+        setContextMenu(null);
+    };
+
+    const handleOpenInExplorer = async (path: string) => {
+        try {
+            if (!window.api?.shell?.openPath) {
+                console.warn('Shell API not available');
+                return;
+            }
+            await window.api.shell.openPath(path);
+        } catch (err) {
+            console.error('Error opening path:', err);
+        }
+        setContextMenu(null);
+    };
+
+    const handleCopyPath = async (path: string) => {
+        await copyToClipboard(path);
+        setContextMenu(null);
+    };
+
     // Dosya ağacı render
     const renderTree = (nodes: FileNode[], level = 0) => {
         return nodes.map((node) => {
@@ -346,6 +370,29 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg>
                         <span>{t('fileExplorer.delete', 'Delete')}</span>
+                    </div>
+                    <div className="context-menu-item" onClick={handleRefresh}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0114.71-3.39L23 10M1 14l4.29 4.29A9 9 0 0019.49 15"></path>
+                        </svg>
+                        <span>{t('fileExplorer.refresh', 'Refresh')}</span>
+                    </div>
+                    <div className="context-menu-item" onClick={() => handleOpenInExplorer(contextMenu.path)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M3 3h18v4H3z"></path>
+                            <path d="M3 9h18v12H3z"></path>
+                            <path d="M9 13h6v6H9z"></path>
+                        </svg>
+                        <span>{t('fileExplorer.openInExplorer', 'Open in Explorer')}</span>
+                    </div>
+                    <div className="context-menu-item" onClick={() => handleCopyPath(contextMenu.path)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>{t('fileExplorer.copyPath', 'Copy Path')}</span>
                     </div>
                     <div className="context-menu-divider"></div>
                     <div className="context-menu-item" onClick={() => handleNewFile(contextMenu.path)}>

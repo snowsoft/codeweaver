@@ -125,4 +125,9 @@ export function setupIPC() {
     ipcMain.handle('shell:openExternal', async (_, url: string) => {
         await shell.openExternal(url);
     });
+
+    ipcMain.handle('shell:openPath', async (_, filePath: string) => {
+        // open the file's folder and highlight it
+        shell.showItemInFolder(filePath);
+    });
 }
