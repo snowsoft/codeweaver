@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { EventEmitter } from 'events';
+import fs from 'fs';
 import path from 'path';
 
 export class WeaverBridge extends EventEmitter {
@@ -8,6 +9,42 @@ export class WeaverBridge extends EventEmitter {
     constructor() {
         super();
         this.weaverPath = this.getWeaverBinaryPath();
+    }
+
+    private buildArgs(options: Record<string, any>): string[] {
+        const args: string[] = [];
+        const skip = new Set(['filePath', 'task']);
+        for (const [key, value] of Object.entries(options)) {
+            if (value === undefined || skip.has(key)) continue;
+            const flag = '--' + key.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
+            args.push(flag);
+            args.push(String(value));
+        }
+        return args;
+    }
+
+    private parseOutput(output: string): any {
+        const trimmed = output.trim();
+        if (!trimmed) return {};
+        try {
+            return JSON.parse(trimmed);
+        } catch {
+            return { code: trimmed };
+        }
+    }
+
+    private getWeaverBinaryPath(): string {
+        const binary = process.platform === 'win32' ? 'weaver.exe' : 'weaver';
+        const possible = [
+            path.join(process.resourcesPath || '', binary),
+            path.join(__dirname, '..', '..', '..', binary)
+        ];
+        for (const p of possible) {
+            if (p && fs.existsSync(p)) {
+                return p;
+            }
+        }
+        return binary;
     }
 
     async generateCode(options: GenerateOptions): Promise<GenerateResult> {
@@ -51,4 +88,33 @@ export class WeaverBridge extends EventEmitter {
             });
         });
     }
+}
+
+export interface GenerateOptions {
+    filePath: string;
+    task: string;
+    contextFile?: string;
+    contextDir?: string;
+    provider?: string;
+    model?: string;
+    temperature?: number;
+    maxTokens?: number;
+}
+
+export interface GenerateResult {
+    [key: string]: string;
+}
+
+export interface RefactorOptions {
+    filePath: string;
+    task: string;
+    contextDir?: string;
+    provider?: string;
+    model?: string;
+    temperature?: number;
+    maxTokens?: number;
+}
+
+export interface RefactorResult {
+    [key: string]: string;
 }
