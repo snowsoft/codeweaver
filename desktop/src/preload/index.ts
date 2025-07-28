@@ -12,7 +12,7 @@ declare global {
                 read: (filePath: string) => Promise<{success: boolean, content?: string, error?: string}>,
                 write: (filePath: string, content: string) => Promise<{success: boolean, error?: string}>,
                 list: (dirPath: string) => Promise<{success: boolean, files?: any[], error?: string}>,
-                create: (filePath: string) => Promise<{success: boolean, error?: string}>,
+                create: (filePath: string, isDir?: boolean) => Promise<{success: boolean, error?: string}>,
                 delete: (filePath: string) => Promise<{success: boolean, error?: string}>,
                 rename: (oldPath: string, newPath: string) => Promise<{success: boolean, error?: string}>
             },
@@ -40,7 +40,7 @@ contextBridge.exposeInMainWorld('api', {
         read: (filePath: string) => ipcRenderer.invoke('file:read', filePath),
         write: (filePath: string, content: string) => ipcRenderer.invoke('file:write', filePath, content),
         list: (dirPath: string) => ipcRenderer.invoke('file:list', dirPath),
-        create: (filePath: string) => ipcRenderer.invoke('file:create', filePath),
+        create: (filePath: string, isDir?: boolean) => ipcRenderer.invoke('file:create', filePath, isDir),
         delete: (filePath: string) => ipcRenderer.invoke('file:delete', filePath),
         rename: (oldPath: string, newPath: string) => ipcRenderer.invoke('file:rename', oldPath, newPath)
     },
