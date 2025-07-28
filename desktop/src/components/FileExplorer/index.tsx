@@ -1,19 +1,5 @@
 // src/components/FileExplorer/index.tsx
 import React, { useState, useEffect } from 'react';
-import {
-    ChevronRight,
-    ChevronDown,
-    File,
-    Folder,
-    FolderOpen,
-    Plus,
-    Trash2,
-    Edit3,
-    FileText,
-    FileCode,
-    Image,
-    Archive
-} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './FileExplorer.css';
 
@@ -40,6 +26,47 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     // Dosya uzantısına göre ikon seçimi
     const getFileIcon = (fileName: string) => {
         const ext = fileName.split('.').pop()?.toLowerCase();
+
+        const codeIcon = (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+        );
+
+        const textIcon = (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+        );
+
+        const imageIcon = (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+        );
+
+        const archiveIcon = (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                <rect x="1" y="3" width="22" height="5"></rect>
+                <line x1="10" y1="12" x2="14" y2="12"></line>
+            </svg>
+        );
+
+        const defaultIcon = (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                <polyline points="13 2 13 9 20 9"></polyline>
+            </svg>
+        );
+
         switch (ext) {
             case 'js':
             case 'jsx':
@@ -51,25 +78,25 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             case 'cpp':
             case 'c':
             case 'php':
-                return <FileCode size={16} />;
+                return codeIcon;
             case 'md':
             case 'txt':
             case 'doc':
             case 'docx':
-                return <FileText size={16} />;
+                return textIcon;
             case 'jpg':
             case 'jpeg':
             case 'png':
             case 'gif':
             case 'svg':
-                return <Image size={16} />;
+                return imageIcon;
             case 'zip':
             case 'tar':
             case 'gz':
             case 'rar':
-                return <Archive size={16} />;
+                return archiveIcon;
             default:
-                return <File size={16} />;
+                return defaultIcon;
         }
     };
 
@@ -119,10 +146,28 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                         {node.type === 'directory' ? (
                             <>
                 <span className="file-icon">
-                  {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                  {isExpanded ? (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                  ) : (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                  )}
                 </span>
                                 <span className="file-icon">
-                  {isExpanded ? <FolderOpen size={16} /> : <Folder size={16} />}
+                  {isExpanded ? (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                          <line x1="10" y1="13" x2="10" y2="17"></line>
+                          <line x1="14" y1="13" x2="14" y2="17"></line>
+                      </svg>
+                  ) : (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                  )}
                 </span>
                             </>
                         ) : (
@@ -193,11 +238,18 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
             <div className="file-explorer-header">
                 <h3>{t('fileExplorer.title', 'EXPLORER')}</h3>
                 <div className="file-explorer-actions">
-                    <button title={t('fileExplorer.newFile', 'New File')}>
-                        <Plus size={16} />
+                    <button title={t('fileExplorer.newFile', 'New File')} type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
                     </button>
-                    <button title={t('fileExplorer.refresh', 'Refresh')}>
-                        <ChevronDown size={16} />
+                    <button title={t('fileExplorer.refresh', 'Refresh')} type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -212,17 +264,36 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                     style={{ top: contextMenu.y, left: contextMenu.x }}
                 >
                     <div className="context-menu-item">
-                        <Edit3 size={14} /> {t('fileExplorer.rename', 'Rename')}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        <span>{t('fileExplorer.rename', 'Rename')}</span>
                     </div>
                     <div className="context-menu-item">
-                        <Trash2 size={14} /> {t('fileExplorer.delete', 'Delete')}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>{t('fileExplorer.delete', 'Delete')}</span>
                     </div>
                     <div className="context-menu-divider"></div>
                     <div className="context-menu-item">
-                        <Plus size={14} /> {t('fileExplorer.newFile', 'New File')}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                            <polyline points="13 2 13 9 20 9"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        <span>{t('fileExplorer.newFile', 'New File')}</span>
                     </div>
                     <div className="context-menu-item">
-                        <Folder size={14} /> {t('fileExplorer.newFolder', 'New Folder')}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            <line x1="12" y1="11" x2="12" y2="17"></line>
+                            <line x1="9" y1="14" x2="15" y2="14"></line>
+                        </svg>
+                        <span>{t('fileExplorer.newFolder', 'New Folder')}</span>
                     </div>
                 </div>
             )}

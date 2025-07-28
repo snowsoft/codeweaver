@@ -1,177 +1,300 @@
 ﻿// src/views/Settings/index.tsx
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import './Settings.css';
 
 const Settings: React.FC = () => {
     const { t, i18n } = useTranslation();
-    const [currentLang, setCurrentLang] = useState(i18n.language);
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
-    const [fontSize, setFontSize] = useState(localStorage.getItem('fontSize') || '14');
-    const [tabSize, setTabSize] = useState(localStorage.getItem('tabSize') || '2');
-    const [wordWrap, setWordWrap] = useState(localStorage.getItem('wordWrap') || 'on');
+    const [language, setLanguage] = useState(localStorage.getItem('language') || 'tr');
+    const [fontSize, setFontSize] = useState(localStorage.getItem('editorFontSize') || '14');
+    const [tabSize, setTabSize] = useState(localStorage.getItem('editorTabSize') || '2');
+    const [wordWrap, setWordWrap] = useState(localStorage.getItem('editorWordWrap') || 'on');
+    const [minimap, setMinimap] = useState(localStorage.getItem('editorMinimap') || 'true');
+    const [autoSave, setAutoSave] = useState(localStorage.getItem('autoSave') || 'off');
+    const [showLineNumbers, setShowLineNumbers] = useState(localStorage.getItem('showLineNumbers') || 'true');
 
-    const languages = [
-        { code: 'en', name: 'English', flag: '🇬🇧' },
-        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
-    ];
-
-    const handleLanguageChange = (lang: string) => {
-        setCurrentLang(lang);
-        i18n.changeLanguage(lang);
-        localStorage.setItem('language', lang);
-    };
-
+    // Tema değişikliği
     const handleThemeChange = (newTheme: string) => {
         setTheme(newTheme);
         localStorage.setItem('theme', newTheme);
-        // Apply theme to document
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        document.documentElement.setAttribute('data-theme', newTheme);
+
+        // Tema değişikliğini diğer componentlere bildir
+        window.dispatchEvent(new Event('storage'));
     };
 
-    const handleFontSizeChange = (size: string) => {
-        setFontSize(size);
-        localStorage.setItem('fontSize', size);
+    // Dil değişikliği
+    const handleLanguageChange = (newLang: string) => {
+        setLanguage(newLang);
+        localStorage.setItem('language', newLang);
+        i18n.changeLanguage(newLang);
     };
 
-    const handleTabSizeChange = (size: string) => {
-        setTabSize(size);
-        localStorage.setItem('tabSize', size);
+    // Editor ayarlarını kaydet
+    const saveEditorSettings = () => {
+        localStorage.setItem('editorFontSize', fontSize);
+        localStorage.setItem('editorTabSize', tabSize);
+        localStorage.setItem('editorWordWrap', wordWrap);
+        localStorage.setItem('editorMinimap', minimap);
+        localStorage.setItem('showLineNumbers', showLineNumbers);
+
+        // Editor ayarları değişikliğini bildir
+        window.dispatchEvent(new CustomEvent('editorSettingsChanged', {
+            detail: { fontSize, tabSize, wordWrap, minimap, showLineNumbers }
+        }));
     };
 
-    const handleWordWrapChange = (wrap: string) => {
-        setWordWrap(wrap);
-        localStorage.setItem('wordWrap', wrap);
+    // Genel ayarları kaydet
+    const saveGeneralSettings = () => {
+        localStorage.setItem('autoSave', autoSave);
+        window.dispatchEvent(new Event('storage'));
     };
 
     return (
-        <div className="p-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-                {t('settings.title')}
-            </h1>
+        <div className="settings-container">
+            <div className="settings-header">
+                <h1>{t('settings.title', 'Ayarlar')}</h1>
+            </div>
 
-            <div className="space-y-6">
-                {/* Language Settings */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                        {t('settings.language')}
-                    </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {languages.map((lang) => (
-                            <button
-                                key={lang.code}
-                                onClick={() => handleLanguageChange(lang.code)}
-                                className={`p-4 rounded-lg border-2 transition-all ${
-                                    currentLang === lang.code
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
-                                }`}
-                            >
-                                <div className="text-2xl mb-2">{lang.flag}</div>
-                                <div className="font-medium text-gray-900 dark:text-white">{lang.name}</div>
-                            </button>
-                        ))}
-                    </div>
-                </div>
+            <div className="settings-content">
+                {/* Görünüm Ayarları */}
+                <section className="settings-section">
+                    <h2 className="section-title">{t('settings.appearance', 'Görünüm')}</h2>
 
-                {/* Theme Settings */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                        {t('settings.theme')}
-                    </h2>
-                    <div className="grid grid-cols-3 gap-4">
-                        {['light', 'dark', 'system'].map((themeOption) => (
-                            <button
-                                key={themeOption}
-                                onClick={() => handleThemeChange(themeOption)}
-                                className={`p-4 rounded-lg border-2 transition-all ${
-                                    theme === themeOption
-                                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                        : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
-                                }`}
-                            >
-                                <div className="text-2xl mb-2">
-                                    {themeOption === 'light' ? '☀️' : themeOption === 'dark' ? '🌙' : '💻'}
-                                </div>
-                                <div className="font-medium text-gray-900 dark:text-white">
-                                    {t(`settings.themes.${themeOption}`)}
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Editor Settings */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                        {t('settings.editor')}
-                    </h2>
-
-                    <div className="space-y-4">
-                        {/* Font Size */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                {t('settings.fontSize')}
-                            </label>
-                            <select
-                                value={fontSize}
-                                onChange={(e) => handleFontSizeChange(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
-                         focus:outline-none dark:bg-gray-700 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            >
-                                {['12', '14', '16', '18', '20'].map((size) => (
-                                    <option key={size} value={size}>{size}px</option>
-                                ))}
-                            </select>
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.theme', 'Tema')}</span>
+                            <span className="label-description">
+                {t('settings.themeDescription', 'Uygulama temasını seçin')}
+              </span>
                         </div>
-
-                        {/* Tab Size */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                {t('settings.tabSize')}
-                            </label>
-                            <select
-                                value={tabSize}
-                                onChange={(e) => handleTabSizeChange(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
-                         focus:outline-none dark:bg-gray-700 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            >
-                                {['2', '4', '8'].map((size) => (
-                                    <option key={size} value={size}>{size}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Word Wrap */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                {t('settings.wordWrap')}
-                            </label>
-                            <div className="flex gap-4">
-                                {['on', 'off'].map((option) => (
-                                    <button
-                                        key={option}
-                                        onClick={() => handleWordWrapChange(option)}
-                                        className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                                            wordWrap === option
-                                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                                                : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
-                                        }`}
-                                    >
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {t(`settings.${option}`)}
-                    </span>
-                                    </button>
-                                ))}
+                        <div className="setting-control">
+                            <div className="theme-selector">
+                                <button
+                                    className={`theme-option ${theme === 'light' ? 'active' : ''}`}
+                                    onClick={() => handleThemeChange('light')}
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <circle cx="12" cy="12" r="5"></circle>
+                                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                    </svg>
+                                    {t('settings.lightMode', 'Açık')}
+                                </button>
+                                <button
+                                    className={`theme-option ${theme === 'dark' ? 'active' : ''}`}
+                                    onClick={() => handleThemeChange('dark')}
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                    </svg>
+                                    {t('settings.darkMode', 'Koyu')}
+                                </button>
+                                <button
+                                    className={`theme-option ${theme === 'system' ? 'active' : ''}`}
+                                    onClick={() => handleThemeChange('system')}
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                                    </svg>
+                                    {t('settings.systemTheme', 'Sistem')}
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.language', 'Dil')}</span>
+                            <span className="label-description">
+                {t('settings.languageDescription', 'Arayüz dilini seçin')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <select
+                                value={language}
+                                onChange={(e) => handleLanguageChange(e.target.value)}
+                                className="select-input"
+                            >
+                                <option value="tr">Türkçe</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Editor Ayarları */}
+                <section className="settings-section">
+                    <h2 className="section-title">{t('settings.editor', 'Editör')}</h2>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.fontSize', 'Font Boyutu')}</span>
+                            <span className="label-description">
+                {t('settings.fontSizeDescription', 'Editör font boyutunu ayarlayın')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <select
+                                value={fontSize}
+                                onChange={(e) => setFontSize(e.target.value)}
+                                onBlur={saveEditorSettings}
+                                className="select-input"
+                            >
+                                <option value="12">12px</option>
+                                <option value="13">13px</option>
+                                <option value="14">14px</option>
+                                <option value="15">15px</option>
+                                <option value="16">16px</option>
+                                <option value="18">18px</option>
+                                <option value="20">20px</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.tabSize', 'Tab Boyutu')}</span>
+                            <span className="label-description">
+                {t('settings.tabSizeDescription', 'Bir tab karakterinin boşluk sayısı')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <select
+                                value={tabSize}
+                                onChange={(e) => setTabSize(e.target.value)}
+                                onBlur={saveEditorSettings}
+                                className="select-input"
+                            >
+                                <option value="2">2</option>
+                                <option value="4">4</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.wordWrap', 'Sözcük Kaydırma')}</span>
+                            <span className="label-description">
+                {t('settings.wordWrapDescription', 'Uzun satırları otomatik kaydır')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={wordWrap === 'on'}
+                                    onChange={(e) => {
+                                        setWordWrap(e.target.checked ? 'on' : 'off');
+                                        saveEditorSettings();
+                                    }}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.minimap', 'Mini Harita')}</span>
+                            <span className="label-description">
+                {t('settings.minimapDescription', 'Kod önizleme haritasını göster')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={minimap === 'true'}
+                                    onChange={(e) => {
+                                        setMinimap(e.target.checked ? 'true' : 'false');
+                                        saveEditorSettings();
+                                    }}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.lineNumbers', 'Satır Numaraları')}</span>
+                            <span className="label-description">
+                {t('settings.lineNumbersDescription', 'Satır numaralarını göster')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={showLineNumbers === 'true'}
+                                    onChange={(e) => {
+                                        setShowLineNumbers(e.target.checked ? 'true' : 'false');
+                                        saveEditorSettings();
+                                    }}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Genel Ayarlar */}
+                <section className="settings-section">
+                    <h2 className="section-title">{t('settings.general', 'Genel')}</h2>
+
+                    <div className="setting-item">
+                        <div className="setting-label">
+                            <span className="label-text">{t('settings.autoSave', 'Otomatik Kayıt')}</span>
+                            <span className="label-description">
+                {t('settings.autoSaveDescription', 'Dosyaları otomatik olarak kaydet')}
+              </span>
+                        </div>
+                        <div className="setting-control">
+                            <select
+                                value={autoSave}
+                                onChange={(e) => {
+                                    setAutoSave(e.target.value);
+                                    saveGeneralSettings();
+                                }}
+                                className="select-input"
+                            >
+                                <option value="off">{t('settings.off', 'Kapalı')}</option>
+                                <option value="afterDelay">{t('settings.afterDelay', 'Gecikmeli')}</option>
+                                <option value="onFocusChange">{t('settings.onFocusChange', 'Odak Değişiminde')}</option>
+                                <option value="onWindowChange">{t('settings.onWindowChange', 'Pencere Değişiminde')}</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Hakkında */}
+                <section className="settings-section">
+                    <h2 className="section-title">{t('settings.about', 'Hakkında')}</h2>
+
+                    <div className="about-content">
+                        <div className="about-logo">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                        </div>
+                        <div className="about-info">
+                            <h3>CodeWeaver Desktop</h3>
+                            <p>{t('settings.version', 'Sürüm')}: 1.0.0</p>
+                            <p>{t('settings.description', 'AI destekli kod üretim ve dönüşüm aracı')}</p>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     );

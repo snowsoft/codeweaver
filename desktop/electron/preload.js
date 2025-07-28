@@ -17,7 +17,20 @@ contextBridge.exposeInMainWorld('electron', {
     openProject: () => ipcRenderer.invoke('open-project'),
 
     // Terminal işlemleri
-    runCommand: (command, cwd) => ipcRenderer.invoke('run-command', command, cwd),
+    createTerminal: (id) => ipcRenderer.invoke('terminal-create', id),
+    sendTerminalInput: (id, data) => ipcRenderer.invoke('terminal-input', id, data),
+    killTerminal: (id) => ipcRenderer.invoke('terminal-kill', id),
+    resizeTerminal: (id, cols, rows) => ipcRenderer.invoke('terminal-resize', id, cols, rows),
+
+    // Terminal event listeners
+    onTerminalOutput: (id, callback) => {
+        ipcRenderer.on(`terminal-output-${id}`, callback);
+        return () => ipcRenderer.removeListener(`terminal-output-${id}`, callback);
+    },
+    onTerminalExit: (id, callback) => {
+        ipcRenderer.on(`terminal-exit-${id}`, callback);
+        return () => ipcRenderer.removeListener(`terminal-exit-${id}`, callback);
+    },
 
     // Weaver CLI işlemleri
     weaverNew: (fileName, task, contextFile) =>

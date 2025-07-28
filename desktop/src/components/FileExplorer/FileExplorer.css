@@ -112,6 +112,16 @@
     transition: background-color 0.1s;
 }
 
+.context-menu-item svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.context-menu-item span {
+    flex: 1;
+}
+
 .context-menu-item:hover {
     background-color: var(--hover-bg);
 }
