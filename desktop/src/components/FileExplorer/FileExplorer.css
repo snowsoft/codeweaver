@@ -89,6 +89,42 @@
     color: var(--accent-color);
 }
 
+/* File extension colors */
+.file-item.ext-js,
+.file-item.ext-js .file-icon {
+    color: var(--color-js);
+}
+
+.file-item.ext-ts,
+.file-item.ext-ts .file-icon {
+    color: var(--color-ts);
+}
+
+.file-item.ext-py,
+.file-item.ext-py .file-icon {
+    color: var(--color-py);
+}
+
+.file-item.ext-go,
+.file-item.ext-go .file-icon {
+    color: var(--color-go);
+}
+
+.file-item.ext-md,
+.file-item.ext-md .file-icon {
+    color: var(--color-md);
+}
+
+.file-item.ext-json,
+.file-item.ext-json .file-icon {
+    color: var(--color-json);
+}
+
+.file-item.ext-image,
+.file-item.ext-image .file-icon {
+    color: var(--color-image);
+}
+
 .file-name {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -185,6 +221,13 @@
     --accent-color: #ffffff;
     --scrollbar-thumb: #cccccc;
     --scrollbar-thumb-hover: #999999;
+    --color-js: #f1e05a;
+    --color-ts: #3178c6;
+    --color-py: #3572a5;
+    --color-go: #00add8;
+    --color-md: #083fa1;
+    --color-json: #cbcb41;
+    --color-image: #a074c4;
 }
 
 /* Dark theme */
@@ -199,4 +242,11 @@
     --accent-color: #ffffff;
     --scrollbar-thumb: #424242;
     --scrollbar-thumb-hover: #525252;
+    --color-js: #f1e05a;
+    --color-ts: #3178c6;
+    --color-py: #3572a5;
+    --color-go: #00add8;
+    --color-md: #83a1ff;
+    --color-json: #dcdcaa;
+    --color-image: #c586c0;
 }

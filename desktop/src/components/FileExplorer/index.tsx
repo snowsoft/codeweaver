@@ -228,15 +228,45 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     };
 
     // Dosya ağacı render
+    const extensionClassMap: Record<string, string> = {
+        js: 'ext-js',
+        jsx: 'ext-js',
+        ts: 'ext-ts',
+        tsx: 'ext-ts',
+        py: 'ext-py',
+        go: 'ext-go',
+        java: 'ext-java',
+        c: 'ext-c',
+        cpp: 'ext-cpp',
+        php: 'ext-php',
+        md: 'ext-md',
+        txt: 'ext-txt',
+        json: 'ext-json',
+        yml: 'ext-yaml',
+        yaml: 'ext-yaml',
+        jpg: 'ext-image',
+        jpeg: 'ext-image',
+        png: 'ext-image',
+        gif: 'ext-image',
+        svg: 'ext-image',
+        bmp: 'ext-image',
+    };
+
+    const getExtensionClass = (fileName: string) => {
+        const ext = fileName.split('.').pop()?.toLowerCase() || '';
+        return extensionClassMap[ext] || '';
+    };
+
     const renderTree = (nodes: FileNode[], level = 0) => {
         return nodes.map((node) => {
             const isExpanded = expandedFolders.has(node.path);
             const isSelected = selectedFile === node.path;
+            const extClass = node.type === 'file' ? getExtensionClass(node.name) : '';
 
             return (
                 <div key={node.path}>
                     <div
-                        className={`file-item ${isSelected ? 'selected' : ''}`}
+                        className={`file-item ${extClass} ${isSelected ? 'selected' : ''}`}
                         style={{ paddingLeft: `${level * 20 + 10}px` }}
                         onClick={() => handleFileClick(node)}
                         onContextMenu={(e) => handleContextMenu(e, node.path)}
