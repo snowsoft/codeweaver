@@ -69,7 +69,7 @@ func runTest(cmd *cobra.Command, args []string) error {
     spinner.UpdateText("Generating unit tests...")
     
     // Initialize Ollama client
-    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)
+    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
     
     // Build prompt
     prompt := buildTestPrompt(language, testFramework, sourceCode, fileName)

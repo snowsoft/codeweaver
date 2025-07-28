@@ -65,7 +65,7 @@ func runDocument(cmd *cobra.Command, args []string) error {
     spinner.UpdateText("Generating documentation...")
     
     // Initialize Ollama client
-    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)
+    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
     
     // Build prompt
     prompt := buildDocumentPrompt(language, documentStyle, originalCode)
