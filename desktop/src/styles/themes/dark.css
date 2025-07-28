@@ -1,0 +1,30 @@
+:root[data-theme="dark"] {
+    /* Colors */
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #252526;
+    --bg-tertiary: #2d2d30;
+
+    --text-primary: #cccccc;
+    --text-secondary: #858585;
+    --text-tertiary: #5a5a5a;
+
+    --accent-primary: #007acc;
+    --accent-secondary: #1a8cff;
+
+    /* Editor Colors */
+    --editor-bg: #1e1e1e;
+    --editor-line-number: #5a5a5a;
+    --editor-selection: #264f78;
+
+    /* Diff Colors */
+    --diff-added-bg: #373d29;
+    --diff-added-fg: #4b8b3b;
+    --diff-removed-bg: #4b1818;
+    --diff-removed-fg: #ff6b6b;
+
+    /* Status Colors */
+    --status-success: #4ec9b0;
+    --status-warning: #ce9178;
+    --status-error: #f44747;
+    --status-info: #569cd6;
+}

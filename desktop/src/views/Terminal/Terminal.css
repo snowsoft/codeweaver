@@ -1,0 +1,217 @@
+/* src/views/Terminal/Terminal.css */
+.terminal-container {
+    height: 100%;
+    background-color: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Terminal Header */
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    height: 35px;
+    padding: 0 8px;
+    user-select: none;
+}
+
+/* Terminal Tabs */
+.terminal-tabs {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    overflow-x: auto;
+    gap: 2px;
+}
+
+.terminal-tabs::-webkit-scrollbar {
+    height: 3px;
+}
+
+.terminal-tabs::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 3px;
+}
+
+.terminal-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: transparent;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.terminal-tab:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.terminal-tab.active {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.terminal-tab svg {
+    width: 14px;
+    height: 14px;
+}
+
+.terminal-tab-close {
+    background: none;
+    border: none;
+    color: transparent;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.terminal-tab:hover .terminal-tab-close {
+    color: var(--text-secondary);
+}
+
+.terminal-tab-close:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.terminal-new-tab {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.terminal-new-tab:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* Terminal Actions */
+.terminal-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.terminal-action-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.terminal-action-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* Resize Handle */
+.terminal-resize-handle {
+    height: 4px;
+    background-color: transparent;
+    cursor: ns-resize;
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.terminal-resize-handle:hover {
+    background-color: var(--accent-bg);
+}
+
+.terminal-resize-handle:active {
+    background-color: var(--accent-bg);
+}
+
+/* Terminal Content */
+.terminal-content-wrapper {
+    flex: 1;
+    overflow: hidden;
+    padding: 8px;
+    background-color: var(--bg-primary);
+}
+
+.terminal-content {
+    height: 100%;
+    width: 100%;
+}
+
+/* XTerm Overrides */
+.xterm {
+    height: 100%;
+    width: 100%;
+}
+
+.xterm-viewport {
+    background-color: transparent !important;
+}
+
+.xterm-screen {
+    padding: 4px;
+}
+
+/* Scrollbar */
+.xterm-viewport::-webkit-scrollbar {
+    width: 10px;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+}
+
+/* Tema uyumlu cursor */
+[data-theme="dark"] .xterm-cursor-layer {
+    filter: invert(1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .terminal-container {
+        left: 0;
+    }
+
+    .terminal-tab span {
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

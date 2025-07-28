@@ -1,0 +1,79 @@
+// vscode-extension/package.json
+{
+  "name": "codeweaver",
+  "displayName": "CodeWeaver AI Assistant",
+  "description": "AI-powered development partner for VS Code",
+  "version": "1.0.0",
+  "publisher": "snowsoft",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": ["Programming Languages", "Other", "Snippets"],
+  "keywords": ["ai", "code generation", "refactoring", "assistant"],
+  "icon": "assets/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snowsoft/codeweaver.git"
+  },
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeweaver.new",
+        "title": "CodeWeaver: Generate New Code"
+      },
+      {
+        "command": "codeweaver.refactor",
+        "title": "CodeWeaver: Refactor Selected Code"
+      },
+      {
+        "command": "codeweaver.heal",
+        "title": "CodeWeaver: Heal Project"
+      },
+      {
+        "command": "codeweaver.ask",
+        "title": "CodeWeaver: Ask Question"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "codeweaver.new",
+        "key": "ctrl+alt+n",
+        "mac": "cmd+alt+n"
+      },
+      {
+        "command": "codeweaver.refactor",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codeweaver.refactor",
+          "group": "1_modification",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeWeaver",
+      "properties": {
+        "codeweaver.apiUrl": {
+          "type": "string",
+          "default": "https://api.codeweaver.dev",
+          "description": "CodeWeaver API URL"
+        },
+        "codeweaver.localMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use local CodeWeaver CLI"
+        }
+      }
+    }
+  }
+}

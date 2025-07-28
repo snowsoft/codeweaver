@@ -1,0 +1,46 @@
+# k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codeweaver-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: codeweaver-web
+  template:
+    metadata:
+      labels:
+        app: codeweaver-web
+    spec:
+      containers:
+      - name: web
+        image: ghcr.io/snowsoft/codeweaver-web:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: codeweaver-secrets
+              key: database-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: codeweaver-web
+spec:
+  selector:
+    app: codeweaver-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

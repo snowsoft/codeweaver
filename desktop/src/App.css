@@ -1,0 +1,89 @@
+/* src/App.css */
+.app {
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* CSS Variables - VS Code inspired */
+:root {
+    /* Dark Theme */
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #252526;
+    --bg-tertiary: #2d2d30;
+    --text-primary: #cccccc;
+    --text-secondary: #8c8c8c;
+    --border-color: #3e3e3e;
+    --hover-bg: rgba(255, 255, 255, 0.1);
+    --accent-bg: #094771;
+    --accent-color: #ffffff;
+    --accent-hover: #0e639c;
+    --scrollbar-thumb: #424242;
+    --scrollbar-thumb-hover: #525252;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --status-bar-bg: #007acc;
+    --status-bar-text: #ffffff;
+}
+
+[data-theme="light"] {
+    /* Light Theme */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f3f3f3;
+    --bg-tertiary: #ececec;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --hover-bg: rgba(0, 0, 0, 0.05);
+    --accent-bg: #007acc;
+    --accent-color: #ffffff;
+    --accent-hover: #005a9e;
+    --scrollbar-thumb: #cccccc;
+    --scrollbar-thumb-hover: #999999;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --status-bar-bg: #007acc;
+    --status-bar-text: #ffffff;
+}
+
+/* Global Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* Selection */
+::selection {
+    background-color: var(--accent-bg);
+    color: var(--accent-color);
+}
+
+/* Focus styles */
+:focus-visible {
+    outline: 1px solid var(--accent-bg);
+    outline-offset: -1px;
+}
+
+button:focus-visible {
+    outline-offset: 0;
+}

@@ -1,0 +1,184 @@
+:root {
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #252526;
+    --bg-tertiary: #2d2d30;
+    --text-primary: #cccccc;
+    --text-secondary: #969696;
+    --accent: #007acc;
+    --border: #464647;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Custom Titlebar */
+.titlebar {
+    height: 32px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    -webkit-app-region: drag;
+    user-select: none;
+}
+
+.titlebar-title {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 10px 15px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.file-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+/* Editor Container */
+.editor-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tabs {
+    height: 35px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+}
+
+.editor {
+    flex: 1;
+    overflow: hidden;
+}
+
+.status-bar {
+    height: 22px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 12px;
+    gap: 20px;
+}
+
+/* Terminal */
+.terminal-container {
+    height: 200px;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-header {
+    height: 30px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 13px;
+}
+
+.terminal-close {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.terminal {
+    flex: 1;
+    padding: 5px;
+}
+
+/* Command Palette */
+.command-palette {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.command-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+}
+
+.command-suggestions {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.command-suggestion {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.command-suggestion:hover {
+    background: var(--bg-secondary);
+}
+
+.command-suggestion.active {
+    background: var(--accent);
+}

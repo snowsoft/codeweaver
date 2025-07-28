@@ -1,0 +1,115 @@
+﻿{
+  "header": {
+    "title": "CodeWeaver Desktop",
+    "search": "Search files...",
+    "openFolder": "Open Folder",
+    "terminal": "Terminal",
+    "git": "Git",
+    "settings": "Settings"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "editor": "Editor",
+    "terminal": "Terminal",
+    "git": "Git",
+    "extensions": "Extensions",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcome": "Welcome to CodeWeaver Desktop",
+    "subtitle": "Your AI-powered code generation and transformation tool",
+    "recentProjects": "Recent Projects",
+    "recentActivities": "Recent Activities",
+    "quickActions": "Quick Actions",
+    "newFile": "New File",
+    "openProject": "Open Project",
+    "cloneRepository": "Clone Repository",
+    "openTerminal": "Open Terminal",
+    "stats": {
+      "totalFiles": "Total Files",
+      "codeGenerated": "Code Generated",
+      "testsCreated": "Tests Created",
+      "reviewsDone": "Reviews Done"
+    },
+    "activities": {
+      "generated": "generated",
+      "refactored": "refactored",
+      "documented": "documented",
+      "tested": "tested"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "darkMode": "Dark",
+    "lightMode": "Light",
+    "systemTheme": "System",
+    "save": "Save",
+    "cancel": "Cancel",
+    "appearance": "Appearance",
+    "themeDescription": "Choose application theme",
+    "languageDescription": "Choose interface language",
+    "editor": "Editor",
+    "fontSize": "Font Size",
+    "fontSizeDescription": "Adjust editor font size",
+    "tabSize": "Tab Size",
+    "tabSizeDescription": "Number of spaces for a tab character",
+    "wordWrap": "Word Wrap",
+    "wordWrapDescription": "Wrap long lines automatically",
+    "minimap": "Minimap",
+    "minimapDescription": "Show code preview map",
+    "lineNumbers": "Line Numbers",
+    "lineNumbersDescription": "Show line numbers",
+    "general": "General",
+    "autoSave": "Auto Save",
+    "autoSaveDescription": "Save files automatically",
+    "off": "Off",
+    "afterDelay": "After Delay",
+    "onFocusChange": "On Focus Change",
+    "onWindowChange": "On Window Change",
+    "about": "About",
+    "version": "Version",
+    "description": "AI-powered code generation and transformation tool"
+  },
+  "fileExplorer": {
+    "title": "EXPLORER",
+    "newFile": "New File",
+    "newFolder": "New Folder",
+    "rename": "Rename",
+    "delete": "Delete",
+    "refresh": "Refresh",
+    "openInExplorer": "Open in Explorer",
+    "copyPath": "Copy Path",
+    "searchFiles": "Search Files"
+  },
+  "editor": {
+    "untitled": "Untitled",
+    "save": "Save",
+    "saveAs": "Save As",
+    "close": "Close",
+    "closeAll": "Close All",
+    "undo": "Undo",
+    "redo": "Redo",
+    "find": "Find",
+    "replace": "Replace",
+    "noFileOpen": "No file is open",
+    "selectFile": "Select a file from the explorer to start editing",
+    "placeholder": "Start typing..."
+  },
+  "terminal": {
+    "new": "New Terminal",
+    "clear": "Clear",
+    "close": "Close",
+    "split": "Split"
+  },
+  "weaver": {
+    "commands": {
+      "new": "Create New Code",
+      "refactor": "Refactor Code",
+      "document": "Add Documentation",
+      "test": "Generate Tests",
+      "review": "Code Review"
+    }
+  }
+}

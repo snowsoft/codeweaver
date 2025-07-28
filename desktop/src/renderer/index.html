@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+    <title>CodeWeaver</title>
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+<div id="app">
+    <div class="titlebar" id="titlebar">
+        <div class="titlebar-drag-region"></div>
+        <div class="titlebar-title">CodeWeaver</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Explorer</h3>
+            </div>
+            <div class="file-tree" id="fileTree"></div>
+        </aside>
+
+        <!-- Editor Container -->
+        <main class="editor-container">
+            <div class="tabs" id="tabs"></div>
+            <div class="editor" id="editor"></div>
+            <div class="status-bar" id="statusBar">
+                <span class="status-item">Ready</span>
+                <span class="status-item" id="languageMode">Plain Text</span>
+                <span class="status-item" id="cursorPosition">Ln 1, Col 1</span>
+            </div>
+        </main>
+
+        <!-- Terminal -->
+        <div class="terminal-container" id="terminalContainer">
+            <div class="terminal-header">
+                <span>Terminal</span>
+                <button class="terminal-close" id="terminalClose">×</button>
+            </div>
+            <div class="terminal" id="terminal"></div>
+        </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="command-palette" id="commandPalette" style="display: none;">
+        <input type="text" class="command-input" id="commandInput" placeholder="Type a command...">
+        <div class="command-suggestions" id="commandSuggestions"></div>
+    </div>
+</div>
+
+<script type="module" src="./index.js"></script>
+</body>
+</html>

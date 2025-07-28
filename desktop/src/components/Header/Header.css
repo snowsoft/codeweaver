@@ -1,0 +1,173 @@
+/* src/components/Header/Header.css */
+.app-header {
+    position: relative;
+    height: 40px;
+    background-color: #2d2d30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    user-select: none;
+    -webkit-app-region: drag;
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    -webkit-app-region: no-drag;
+}
+
+.header-menu-btn {
+    background: transparent;
+    border: none;
+    color: #cccccc;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    transition: background-color 0.2s;
+}
+
+.header-menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-menu-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.header-title {
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    color: #cccccc;
+    -webkit-app-region: drag;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 20px;
+    -webkit-app-region: no-drag;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0 10px;
+    width: 100%;
+    max-width: 400px;
+    height: 28px;
+    transition: all 0.2s;
+}
+
+.search-box:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.search-box:focus-within {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: #007acc;
+}
+
+.search-box svg {
+    color: #8c8c8c;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #cccccc;
+    padding: 6px 0;
+    height: 100%;
+}
+
+.search-input::placeholder {
+    color: #8c8c8c;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    -webkit-app-region: no-drag;
+}
+
+.header-action-btn {
+    background: transparent;
+    border: none;
+    color: #cccccc;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    transition: all 0.2s;
+}
+
+.header-action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-action-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Light theme overrides */
+[data-theme="light"] .app-header {
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+[data-theme="light"] .header-title,
+[data-theme="light"] .header-menu-btn,
+[data-theme="light"] .header-action-btn {
+    color: #333333;
+}
+
+[data-theme="light"] .header-menu-btn:hover,
+[data-theme="light"] .header-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .search-box {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .search-box:hover,
+[data-theme="light"] .search-box:focus-within {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .search-input {
+    color: #333333;
+}
+
+[data-theme="light"] .search-box svg {
+    color: #666666;
+}
+
+[data-theme="light"] .search-input::placeholder {
+    color: #666666;
+}

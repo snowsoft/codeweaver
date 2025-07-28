@@ -1,0 +1,75 @@
+{
+  "appId": "com.snowsoft.codeweaver",
+  "productName": "CodeWeaver",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "../bin",
+      "to": "bin",
+      "filter": ["**/*"]
+    }
+  ],
+  "mac": {
+    "category": "public.app-category.developer-tools",
+    "icon": "public/assets/icon.icns",
+    "hardenedRuntime": true,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist",
+    "gatekeeperAssess": false
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 130,
+        "y": 220
+      },
+      {
+        "x": 410,
+        "y": 220,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ]
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
+      }
+    ],
+    "icon": "public/assets/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": true,
+    "installerIcon": "public/assets/icon.ico",
+    "uninstallerIcon": "public/assets/icon.ico",
+    "installerHeaderIcon": "public/assets/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
+  },
+  "linux": {
+    "target": [
+      "AppImage",
+      "deb",
+      "rpm"
+    ],
+    "icon": "public/assets/icon.png",
+    "category": "Development"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "snowsoft",
+    "repo": "codeweaver",
+    "releaseType": "release"
+  }
+}

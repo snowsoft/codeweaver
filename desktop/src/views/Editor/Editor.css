@@ -1,0 +1,226 @@
+/* src/views/Editor/Editor.css */
+.editor-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+}
+
+/* Tab Bar */
+.editor-tabs {
+    display: flex;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    height: 35px;
+    user-select: none;
+}
+
+.editor-tabs::-webkit-scrollbar {
+    height: 3px;
+}
+
+.editor-tabs::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 3px;
+}
+
+.editor-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background-color: transparent;
+    border-right: 1px solid var(--border-color);
+    cursor: pointer;
+    min-width: 120px;
+    max-width: 200px;
+    transition: all 0.2s;
+    gap: 6px;
+    position: relative;
+}
+
+.editor-tab:hover {
+    background-color: var(--hover-bg);
+}
+
+.editor-tab.active {
+    background-color: var(--bg-primary);
+    border-bottom: 2px solid var(--accent-bg);
+}
+
+.tab-icon {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.editor-tab.active .tab-icon {
+    color: var(--text-primary);
+}
+
+.tab-name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tab-dirty {
+    color: var(--text-secondary);
+    font-size: 18px;
+    line-height: 1;
+}
+
+.tab-close {
+    background: none;
+    border: none;
+    color: transparent;
+    cursor: pointer;
+    padding: 2px;
+    margin-left: 4px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.editor-tab:hover .tab-close {
+    color: var(--text-secondary);
+}
+
+.tab-close:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* Toolbar */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    gap: 4px;
+}
+
+.toolbar-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.toolbar-btn:hover:not(:disabled) {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.toolbar-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Editor Content */
+.editor-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Empty State */
+.editor-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+}
+
+.editor-empty h2 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.editor-empty p {
+    font-size: 14px;
+}
+
+/* Monaco Editor Overrides */
+.monaco-editor {
+    padding-top: 10px;
+}
+
+.monaco-editor .margin {
+    background-color: var(--bg-primary) !important;
+}
+
+.monaco-editor .minimap {
+    border-left: 1px solid var(--border-color);
+}
+
+/* Sticky Scroll */
+.monaco-editor .sticky-widget {
+    background-color: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Selection */
+.monaco-editor .selected-text {
+    background-color: var(--accent-bg) !important;
+}
+
+/* Find Widget */
+.monaco-editor .find-widget {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Suggestions Widget */
+.monaco-editor .suggest-widget {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Hover Widget */
+.monaco-editor .monaco-hover {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Context Menu */
+.monaco-menu {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Scrollbar */
+.monaco-scrollable-element > .scrollbar > .slider {
+    background-color: var(--scrollbar-thumb) !important;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider:hover {
+    background-color: var(--scrollbar-thumb-hover) !important;
+}

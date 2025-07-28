@@ -1,0 +1,51 @@
+# .github/workflows/desktop-release.yml
+name: Desktop Release
+
+on:
+  push:
+    tags:
+      - 'desktop-v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          
+      - name: Build CodeWeaver CLI
+        run: |
+          cd ..
+          go build -o bin/weaver .
+          
+      - name: Install dependencies
+        working-directory: ./desktop
+        run: npm ci
+        
+      - name: Build Electron app
+        working-directory: ./desktop
+        run: npm run build
+        
+      - name: Package and publish
+        working-directory: ./desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ secrets.MAC_CERTS }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
+        run: |
+          npm run dist
+          npm run publish

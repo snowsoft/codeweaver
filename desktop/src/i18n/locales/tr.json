@@ -1,0 +1,115 @@
+﻿{
+  "header": {
+    "title": "CodeWeaver Desktop",
+    "search": "Dosyalarda ara...",
+    "openFolder": "Klasör Aç",
+    "terminal": "Terminal",
+    "git": "Git",
+    "settings": "Ayarlar"
+  },
+  "sidebar": {
+    "dashboard": "Anasayfa",
+    "editor": "Editör",
+    "terminal": "Terminal",
+    "git": "Git",
+    "extensions": "Eklentiler",
+    "settings": "Ayarlar"
+  },
+  "dashboard": {
+    "welcome": "CodeWeaver Desktop'a Hoş Geldiniz",
+    "subtitle": "AI destekli kod üretim ve dönüşüm aracınız",
+    "recentProjects": "Son Projeler",
+    "recentActivities": "Son Aktiviteler",
+    "quickActions": "Hızlı İşlemler",
+    "newFile": "Yeni Dosya",
+    "openProject": "Proje Aç",
+    "cloneRepository": "Repository Klonla",
+    "openTerminal": "Terminal Aç",
+    "stats": {
+      "totalFiles": "Toplam Dosyalar",
+      "codeGenerated": "Üretilen Kod",
+      "testsCreated": "Oluşturulan Testler",
+      "reviewsDone": "Yapılan İncelemeler"
+    },
+    "activities": {
+      "generated": "oluşturuldu",
+      "refactored": "iyileştirildi",
+      "documented": "dokümante edildi",
+      "tested": "test edildi"
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "language": "Dil",
+    "theme": "Tema",
+    "darkMode": "Koyu",
+    "lightMode": "Açık",
+    "systemTheme": "Sistem",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "appearance": "Görünüm",
+    "themeDescription": "Uygulama temasını seçin",
+    "languageDescription": "Arayüz dilini seçin",
+    "editor": "Editör",
+    "fontSize": "Font Boyutu",
+    "fontSizeDescription": "Editör font boyutunu ayarlayın",
+    "tabSize": "Tab Boyutu",
+    "tabSizeDescription": "Bir tab karakterinin boşluk sayısı",
+    "wordWrap": "Sözcük Kaydırma",
+    "wordWrapDescription": "Uzun satırları otomatik kaydır",
+    "minimap": "Mini Harita",
+    "minimapDescription": "Kod önizleme haritasını göster",
+    "lineNumbers": "Satır Numaraları",
+    "lineNumbersDescription": "Satır numaralarını göster",
+    "general": "Genel",
+    "autoSave": "Otomatik Kayıt",
+    "autoSaveDescription": "Dosyaları otomatik olarak kaydet",
+    "off": "Kapalı",
+    "afterDelay": "Gecikmeli",
+    "onFocusChange": "Odak Değişiminde",
+    "onWindowChange": "Pencere Değişiminde",
+    "about": "Hakkında",
+    "version": "Sürüm",
+    "description": "AI destekli kod üretim ve dönüşüm aracı"
+  },
+  "fileExplorer": {
+    "title": "DOSYA GEZGİNİ",
+    "newFile": "Yeni Dosya",
+    "newFolder": "Yeni Klasör",
+    "rename": "Yeniden Adlandır",
+    "delete": "Sil",
+    "refresh": "Yenile",
+    "openInExplorer": "Gezginde Aç",
+    "copyPath": "Yolu Kopyala",
+    "searchFiles": "Dosyalarda Ara"
+  },
+  "editor": {
+    "untitled": "İsimsiz",
+    "save": "Kaydet",
+    "saveAs": "Farklı Kaydet",
+    "close": "Kapat",
+    "closeAll": "Tümünü Kapat",
+    "undo": "Geri Al",
+    "redo": "İleri Al",
+    "find": "Bul",
+    "replace": "Değiştir",
+    "noFileOpen": "Açık dosya yok",
+    "selectFile": "Düzenlemek için gezginden bir dosya seçin",
+    "placeholder": "Yazmaya başlayın..."
+  },
+  "terminal": {
+    "new": "Yeni Terminal",
+    "clear": "Temizle",
+    "close": "Kapat",
+    "split": "Böl"
+  },
+  "weaver": {
+    "commands": {
+      "new": "Yeni Kod Oluştur",
+      "refactor": "Kodu İyileştir",
+      "document": "Dokümantasyon Ekle",
+      "test": "Test Oluştur",
+      "review": "Kod İncelemesi"
+    }
+  }
+}

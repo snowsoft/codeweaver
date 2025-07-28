@@ -1,0 +1,38 @@
+
+$content = @'
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022"],
+    "outDir": "./dist/main",
+    "rootDir": "./src",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "include": [
+    "src/main/**/*.ts",
+    "src/main/**/*.js",
+    "src/preload/**/*.ts",
+    "src/preload/**/*.js"
+  ],
+  "exclude": [
+    "src/renderer/**/*",
+    "src/views/**/*",
+    "src/components/**/*",
+    "node_modules"
+  ]
+}
+'@
+
+Set-Content -Path "tsconfig.main.json" -Value $content -Encoding UTF8
+Write-Host "tsconfig.main.json created successfully!"
+

@@ -1,76 +1,43 @@
-# 🧵 Code Weaver (Kod Dokuyucu)
+# CodeWeaver
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=for-the-badge&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![Ollama](https://img.shields.io/badge/Powered%20by-Ollama-orange?style=for-the-badge)](https://ollama.ai/)
 
-> Evrensel kod üretim ve dönüşüm CLI aracı - Yapay zeka destekli geliştirici asistanınız
 
-Code Weaver, geliştiricilerin kod yazma, refactor etme, belgelendirme ve test süreçlerini otomatize eden güçlü bir komut satırı aracıdır. Herhangi bir programlama dilinde çalışır ve proje bağlamını anlayarak akıllı kod dönüşümleri gerçekleştirir.
-
-## ✨ Özellikler
+## 🌟 Özellikler
 
 - 🌐 **Dil Bağımsız**: Python, JavaScript, Go, Rust, PHP, Java ve daha fazlası
 - 🧠 **Bağlam Farkında**: Proje yapısını anlayarak tutarlı kod üretir
 - 🛡️ **Güvenli**: Tüm değişiklikler onayınız olmadan uygulanmaz
 - 🎨 **İnteraktif**: Renkli diff görünümü ve düzenleme seçenekleri
 - 🔧 **Modüler**: Kolayca genişletilebilir komut yapısı
+- 📦 **Template Sistemi**: Hazır proje şablonları ile hızlı başlangıç
+- 🤖 **Proaktif Asistan**: Daemon modu ile sürekli kod kalitesi önerileri
+- 🔮 **Etki Analizi**: Değişikliklerin etkisini önceden görme
+- 🏥 **Otomatik İyileştirme**: Proje sorunlarını tespit ve düzeltme
+- 💬 **Doğal Dil Desteği**: Kod tabanını doğal dilde sorgulama
 - 🚀 **Hızlı**: Go ile yazılmış, tek binary olarak dağıtılır
 
-## 📸 Ekran Görüntüleri
+## 📋 İçindekiler
 
-<details>
-<summary>🖼️ Kullanım Örnekleri</summary>
+- [Kurulum](#kurulum)
+- [Hızlı Başlangıç](#hızlı-başlangıç)
+- [Komutlar](#komutlar)
+- [Template Sistemi](#template-sistemi)
+- [Konfigürasyon](#konfigürasyon)
+- [Örnekler](#örnekler)
+- [Sorun Giderme](#sorun-giderme)
 
-### Kod Üretimi
-```bash
-$ weaver new api_handler.go --task "Create REST API handler for user management"
-✓ Code generated successfully!
-
-Generated Code
-┌─────────────────────────────────────────────────────────┐
-│ package handlers                                        │
-│                                                         │
-│ import (                                                │
-│     "encoding/json"                                     │
-│     "net/http"                                         │
-│     ...                                                 │
-└─────────────────────────────────────────────────────────┘
-
-Save this code to api_handler.go? [Y/n]
-```
-
-### Kod Refactoring
-```bash
-$ weaver refactor legacy.js --task "Modernize to ES6+ syntax"
-✓ Code refactored successfully!
-
-Proposed Changes
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--  12 | var userData = {};
-+  12 | const userData = {};
--  15 | function processData(data) {
-+  15 | const processData = (data) => {
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-What would you like to do?
-> Accept changes
-  Decline changes  
-  Edit manually
-```
-
-</details>
-
-## 🚀 Hızlı Başlangıç
+## 🔧 Kurulum
 
 ### Gereksinimler
 
 - Go 1.21 veya üzeri
 - [Ollama](https://ollama.ai/) (AI model çalıştırma için)
 
-### Kurulum
+### Docker ile Kurulum
 
-#### Option 1: Docker (En Kolay)
 ```bash
 # Docker Compose ile
 docker-compose up -d
@@ -79,7 +46,8 @@ docker-compose up -d
 docker run --rm -it ghcr.io/snowsoft/codeweaver:latest --help
 ```
 
-#### Option 2: Pre-built Binary
+### İkili Dosya İndirme
+
 ```bash
 # Latest release'i indir
 wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-$(uname -s)-$(uname -m)
@@ -87,139 +55,27 @@ chmod +x weaver-*
 sudo mv weaver-* /usr/local/bin/weaver
 ```
 
-#### Option 3: Go Install (Önerilen)
+### Go ile Kurulum
+
 ```bash
 go install github.com/snowsoft/codeweaver@latest
 ```
 
-#### Option 4: Kaynak Koddan Derleme
+### Kaynak Koddan Kurulum
 
-**Linux/macOS:**
 ```bash
-# 1. Projeyi klonla
+# Projeyi klonla
 git clone https://github.com/snowsoft/codeweaver.git
 cd codeweaver
 
-# 2. Kurulum script'ini çalıştır
+# Kurulum script'ini çalıştır
 chmod +x install.sh
 ./install.sh
 ```
 
-**Windows (PowerShell):**
-```powershell
-# 1. Projeyi klonla
-git clone https://github.com/snowsoft/codeweaver.git
-cd codeweaver
+## 🚀 Hızlı Başlangıç
 
-# 2. PowerShell script'ini çalıştır
-powershell -ExecutionPolicy Bypass -File install.ps1
-```
-
-**Windows (Command Prompt):**
-```batch
-# 1. Projeyi klonla
-git clone https://github.com/snowsoft/codeweaver.git
-cd codeweaver
-
-# 2. Batch script'ini çalıştır
-install.bat
-```
-
-**Manuel Kurulum:**
-```bash
-# 1. Projeyi klonla
-git clone https://github.com/snowsoft/codeweaver.git
-cd codeweaver
-
-# 2. Bağımlılıkları indir
-go mod download
-go mod tidy
-
-# 3. Derle
-go build -o weaver .
-
-# 4. Sisteme kur
-# Linux/macOS
-sudo mv weaver /usr/local/bin/
-
-# Windows (Administrator olarak)
-move weaver.exe C:\Windows\System32\
-
-# 5. Konfigürasyon dosyasını oluştur
-mkdir -p ~/.config/weaver
-cp config.yaml.example ~/.config/weaver/config.yaml
-```
-
-#### Sorun Giderme - Kurulum
-
-**`missing go.sum entry` hatası:**
-```bash
-# Bağımlılıkları manuel olarak ekleyin
-go get github.com/spf13/cobra@v1.8.0
-go get github.com/spf13/viper@v1.18.2
-go get github.com/pterm/pterm@v0.12.71
-go get github.com/sergi/go-diff@v1.3.1
-go get github.com/AlecAivazis/survey/v2@v2.3.7
-go get gopkg.in/yaml.v3@v3.0.1
-
-# go.sum dosyasını yeniden oluştur
-go mod tidy
-```
-
-**Windows'ta `GOPROXY` veya `GOSUMDB` hatası:**
-```batch
-# Go ortam değişkenlerini düzelt
-go env -w GOPROXY=https://proxy.golang.org,direct
-go env -w GOSUMDB=sum.golang.org
-go env -w GO111MODULE=on
-
-# veya fix-goproxy.bat dosyasını çalıştır
-fix-goproxy.bat
-```
-
-**"package is not in std" hatası (Bozuk Go kurulumu):**
-```powershell
-# Go ortamını düzelt
-powershell -ExecutionPolicy Bypass -File fix-go-env.ps1
-
-# veya manuel olarak
-# 1. Go'yu tamamen kaldır
-# 2. https://go.dev/dl/ adresinden yeniden indir
-# 3. Varsayılan konuma kur (C:\Program Files\Go)
-# 4. Bilgisayarı yeniden başlat
-```
-
-**Proxy/Firewall arkasındaysanız:**
-```batch
-# Checksum doğrulamasını kapat
-go env -w GOSUMDB=off
-go env -w GOPROXY=direct
-
-# Şirket proxy'si varsa
-set HTTP_PROXY=http://proxy.company.com:8080
-set HTTPS_PROXY=http://proxy.company.com:8080
-
-# Offline kurulum script'ini kullan
-powershell -ExecutionPolicy Bypass -File install-offline.ps1
-```
-
-#### Option 3: Pre-built Binary İndir
-```bash
-# Linux (amd64)
-wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-linux-amd64
-chmod +x weaver-linux-amd64
-sudo mv weaver-linux-amd64 /usr/local/bin/weaver
-
-# macOS (arm64)
-wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-darwin-arm64
-chmod +x weaver-darwin-arm64
-sudo mv weaver-darwin-arm64 /usr/local/bin/weaver
-
-# Windows
-# Download weaver-windows-amd64.exe from releases page
-```
-
-### Ollama Kurulumu
+### 1. Ollama Kurulumu
 
 ```bash
 # macOS/Linux
@@ -232,7 +88,7 @@ ollama serve
 ollama pull codellama:13b-instruct
 ```
 
-### İlk Kullanım
+### 2. İlk Kullanım
 
 ```bash
 # Kurulumu doğrula
@@ -245,55 +101,276 @@ weaver --help
 weaver new hello.py --task "Create a simple Flask API with hello world endpoint"
 ```
 
-## 📖 Kullanım Kılavuzu
+## 📖 Komutlar
 
-### Komutlar
+### Temel Komutlar
 
-#### `weaver new` - Yeni Kod Üretme
+#### 🆕 `weaver new` - Yeni Kod Üretme
+
+Sıfırdan yeni kod dosyaları oluşturur.
+
 ```bash
 weaver new <dosya_adı> --task <açıklama> [--context-file <referans_dosya>]
-
-# Örnekler
-weaver new user_service.py --task "Create user service with CRUD operations"
-weaver new Button.tsx --task "Create reusable button component" --context-file theme.ts
 ```
 
-#### `weaver refactor` - Kod İyileştirme
+**Örnekler:**
+```bash
+# Python servis oluştur
+weaver new user_service.py --task "Create user service with CRUD operations"
+
+# React component oluştur
+weaver new Button.tsx --task "Create reusable button component" --context-file theme.ts
+
+# Go API handler oluştur
+weaver new handler.go --task "Create REST API handler for products"
+```
+
+### 🔄 `weaver refactor` - Kod İyileştirme
+
+Mevcut kodu modernize eder ve iyileştirir.
+
 ```bash
 weaver refactor <dosya_adı> --task <açıklama> [--context-dir <proje_dizini>]
-
-# Örnekler
-weaver refactor old_code.js --task "Add TypeScript types and modern syntax"
-weaver refactor api.py --task "Add async/await support" --context-dir src/
 ```
 
-#### `weaver document` - Kod Belgelendirme
+**Örnekler:**
+```bash
+# Modern JavaScript syntax'e dönüştür
+weaver refactor old_code.js --task "Add TypeScript types and modern syntax"
+
+# Async/await desteği ekle
+weaver refactor api.py --task "Add async/await support" --context-dir src/
+
+# Error handling ekle
+weaver refactor service.go --task "Add comprehensive error handling"
+```
+
+### 📝 `weaver document` - Dokümantasyon
+
+Kod dosyalarına otomatik dokümantasyon ekler.
+
 ```bash
 weaver document <dosya_adı> [--style <stil>]
+```
 
-# Örnekler
+**Desteklenen Stiller:**
+- `jsdoc` - JavaScript için
+- `google` - Python için
+- `godoc` - Go için (otomatik)
+- `phpdoc` - PHP için
+
+**Örnekler:**
+```bash
 weaver document utils.js --style jsdoc
 weaver document helpers.py --style google
-weaver document main.go  # Otomatik GoDoc stili
+weaver document main.go
 ```
 
-#### `weaver test` - Test Yazma
+### 🧪 `weaver test` - Test Üretme
+
+Kod için otomatik test dosyaları oluşturur.
+
 ```bash
 weaver test <dosya_adı> [--framework <test_framework>]
-
-# Örnekler
-weaver test calculator.py --framework pytest
-weaver test api.js --framework jest
-weaver test service.go  # Native Go testing
 ```
 
-#### `weaver review` - Kod İnceleme
+**Örnekler:**
+```bash
+weaver test calculator.py --framework pytest
+weaver test api.js --framework jest
+weaver test service.go
+```
+
+### 🔍 `weaver review` - Kod İnceleme
+
+Güvenlik, performans ve kalite açısından kod analizi yapar.
+
 ```bash
 weaver review <dosya_adı> [--task <odak_noktası>]
+```
 
-# Örnekler
+**Örnekler:**
+```bash
 weaver review auth.php --task "Check for security vulnerabilities"
-weaver review algorithm.py --task "Analyze time complexity and optimization"
+weaver review algorithm.py --task "Analyze time complexity"
+```
+
+### Gelişmiş Komutlar
+
+#### 🏥 `weaver heal-project` - Proje Doktoru
+
+Tüm kod tabanını analiz ederek sorunları tespit eder ve otomatik iyileştirme planı sunar.
+
+```bash
+weaver heal-project [--auto-fix] [--severity <level>]
+```
+
+#### 📦 `weaver add-dependency` - Akıllı Bağımlılık Yönetimi
+
+Sadece paket yüklemez, projeye tam entegre eder.
+
+```bash
+weaver add-dependency <package> [--integrate] [--example]
+```
+
+#### 🏛️ `weaver check-architecture` - Mimari Uyum Kontrolü
+
+Proje mimarisinin kurallara uygunluğunu kontrol eder.
+
+```bash
+weaver check-architecture
+```
+
+#### 👁️ `weaver --daemon` - Arka Plan Asistanı
+
+Sürekli çalışan, proaktif önerilerde bulunan asistan modu.
+
+```bash
+weaver --daemon start|stop|status
+```
+
+#### 💬 `weaver ask` - Doğal Dilde Kod Sorgulama
+
+Kod tabanınızı doğal dilde sorgulayın.
+
+```bash
+weaver ask "<soru>"
+```
+
+#### 📊 `weaver analyze-impact` - Değişiklik Etki Analizi
+
+Büyük değişikliklerin etkisini önceden görün.
+
+```bash
+weaver analyze-impact "<değişiklik senaryosu>"
+```
+
+#### 📅 `weaver plan-feature` - Özellik Planlama
+
+Yeni özellikler için otomatik görev listesi ve yol haritası oluşturur.
+
+```bash
+weaver plan-feature "<özellik açıklaması>" [--estimate]
+```
+
+Detaylı bilgi için [Gelişmiş Komutlar Wiki'sine](https://github.com/snowsoft/codeweaver/wiki/Advanced-Commands) bakın.
+
+## 📦 Template Sistemi
+
+CodeWeaver, hazır proje şablonları ile hızlı proje başlatmanızı sağlar.
+
+### Template Komutları
+
+```bash
+# Mevcut template'leri listele
+weaver template list
+
+# Template kullanarak proje oluştur
+weaver template use <template-adı> <proje-adı>
+
+# Kendi template'ini kaydet
+weaver template save <template-adı> <proje-dizini>
+
+# Template detaylarını gör
+weaver template info <template-adı>
+```
+
+### Mevcut Template'ler
+
+#### 🐘 Laravel Template'leri
+
+1. **`laravel`** - Full-Stack Laravel Uygulaması
+   - Web + API routes
+   - Sanctum authentication
+   - Docker setup (nginx, mysql, redis)
+   - User management sistemi
+   - Migration dosyaları
+   - Frontend desteği
+
+2. **`laravel-api`** - API-Only Laravel
+   - Versioned API routes
+   - RESTful endpoints
+   - Health check endpoint
+   - Post/Comment modelleri
+   - CORS yapılandırması
+
+3. **`laravel-livewire`** - Laravel + Livewire
+   - Livewire 3 entegrasyonu
+   - Tailwind CSS
+   - Reactive UI components
+   - Vite asset bundling
+
+#### ⚛️ React Template'leri
+
+1. **`react-app`** - Modern React Uygulaması
+   - Vite + React 18
+   - TypeScript desteği
+   - React Router
+   - Tailwind CSS
+   - ESLint + Prettier
+
+2. **`react-component`** - React Component Library
+   - Component development setup
+   - Storybook entegrasyonu
+   - Jest + Testing Library
+   - Rollup bundling
+
+#### 🐍 Python Template'leri
+
+1. **`python-cli`** - Python CLI Uygulaması
+   - Click framework
+   - Poetry dependency management
+   - Pytest test setup
+   - Type hints
+
+2. **`python-api`** - FastAPI Uygulaması
+   - FastAPI + Uvicorn
+   - SQLAlchemy ORM
+   - Alembic migrations
+   - JWT authentication
+
+#### 🚀 Go Template'leri
+
+1. **`go-api`** - Go REST API
+   - Gin framework
+   - GORM ORM
+   - JWT middleware
+   - Docker ready
+
+2. **`go-cli`** - Go CLI Uygulaması
+   - Cobra framework
+   - Configuration management
+   - Cross-platform build
+
+### Template Kullanım Örnekleri
+
+```bash
+# Laravel blog uygulaması
+weaver template use laravel my-blog
+
+# React dashboard
+weaver template use react-app admin-dashboard
+
+# Python CLI tool
+weaver template use python-cli data-processor
+
+# Go microservice
+weaver template use go-api user-service
+```
+
+### Özel Template Oluşturma
+
+Kendi template'lerinizi oluşturabilir ve kaydedebilirsiniz:
+
+```bash
+# Mevcut projeyi template olarak kaydet
+weaver template save my-custom-app ./my-project
+
+# Template'i düzenle
+weaver template edit my-custom-app
+
+# Template'i dışa aktar
+weaver template export my-custom-app ./template.zip
 ```
 
 ## ⚙️ Konfigürasyon
@@ -317,6 +394,13 @@ ui:
     removed: "red"
     modified: "yellow"
 
+# Template Ayarları
+templates:
+  source: "local"  # local, remote, both
+  remote_url: "https://templates.codeweaver.dev"
+  cache_dir: "~/.config/weaver/templates"
+  auto_update: true
+
 # Varsayılan Ayarlar
 defaults:
   context_depth: 3
@@ -331,70 +415,111 @@ languages:
   javascript:
     test_framework: "jest"
     doc_style: "jsdoc"
+  go:
+    test_framework: "native"
+    doc_style: "godoc"
 ```
 
-## 🎯 Kullanım Senaryoları
+## 📚 Gelişmiş Örnekler
 
-### 1. API Endpoint Oluşturma
+### 🏗️ Mikroservis Mimarisi Oluşturma
+
 ```bash
-# FastAPI endpoint
-weaver new endpoints/products.py --task "Create CRUD endpoints for products with pagination"
+# User service
+weaver template use go-api services/user-service
 
-# Express.js route
-weaver new routes/auth.js --task "Create JWT authentication routes with refresh token"
+# Product service
+weaver template use python-api services/product-service
+
+# Gateway
+weaver template use laravel-api services/api-gateway
+
+# Frontend
+weaver template use react-app frontend
 ```
 
-### 2. Legacy Kod Modernizasyonu
-```bash
-# jQuery'den vanilla JS'e
-weaver refactor old_ui.js --task "Convert jQuery code to vanilla JavaScript"
+### 🔄 Toplu Refactoring
 
-# Class component'ten functional component'e
-weaver refactor UserProfile.jsx --task "Convert to functional component with hooks"
-```
-
-### 3. Toplu İşlemler
 ```bash
+# Tüm JavaScript dosyalarını TypeScript'e dönüştür
+find . -name "*.js" -exec weaver refactor {} --task "Convert to TypeScript" \;
+
 # Tüm Python dosyalarına type hints ekle
 find . -name "*.py" -exec weaver refactor {} --task "Add type hints" \;
+```
 
-# Proje genelinde belgelendirme
+### 📖 Proje Genelinde Dokümantasyon
+
+```bash
+# Bash script ile
 for file in src/**/*.js; do
   weaver document "$file" --style jsdoc
 done
+
+# PowerShell ile
+Get-ChildItem -Path src -Filter *.py -Recurse | ForEach-Object {
+  weaver document $_.FullName --style google
+}
 ```
 
-### 4. CI/CD Entegrasyonu
+### 🔧 CI/CD Entegrasyonu
+
+**.github/workflows/code-review.yml:**
 ```yaml
-# .github/workflows/code-review.yml
-- name: AI Code Review
-  run: |
-    weaver review src/main.go --task "security" > review.md
-    cat review.md >> $GITHUB_STEP_SUMMARY
+name: AI Code Review
+on: [pull_request]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install Weaver
+        run: |
+          wget https://github.com/snowsoft/codeweaver/releases/latest/download/weaver-linux-amd64
+          chmod +x weaver-linux-amd64
+          sudo mv weaver-linux-amd64 /usr/local/bin/weaver
+      
+      - name: Run AI Review
+        run: |
+          weaver review src/ --task "security and performance" > review.md
+          cat review.md >> $GITHUB_STEP_SUMMARY
 ```
 
-## 🔧 Gelişmiş Özellikler
+## 🐛 Sorun Giderme
 
-### Özel Model Kullanımı
+### Ollama Bağlantı Sorunları
+
 ```bash
-# Daha güçlü model
-weaver new complex_algorithm.py --model "llama2:70b" --task "Implement distributed consensus algorithm"
+# Ollama servisini kontrol et
+systemctl status ollama
 
-# Daha deterministik çıktı
-weaver refactor critical_system.go --temperature 0.1 --task "Add comprehensive error handling"
+# Manuel başlat
+ollama serve
+
+# API'yi test et
+curl http://localhost:11434/api/tags
 ```
 
-### Proje Bağlamı
+### Model İndirme Sorunları
+
 ```bash
-# Tüm proje yapısını bağlam olarak kullan
-weaver refactor src/services/user.js --context-dir . --task "Align with project patterns"
+# Mevcut modelleri listele
+ollama list
 
-# Birden fazla dosyayı referans al
-weaver new test_integration.py \
-  --context-file src/main.py \
-  --context-file src/database.py \
-  --task "Create integration tests"
+# Alternatif model dene
+ollama pull codellama:7b
+
+# Model'i konfigürasyonda güncelle
+weaver config set ollama.model codellama:7b
 ```
+
+### Performans İyileştirme
+
+1. Daha küçük model kullan: `codellama:7b`
+2. Context derinliğini azalt: `weaver config set defaults.context_depth 2`
+3. Timeout süresini artır: `weaver config set ollama.timeout 300s`
 
 ## 🤝 Katkıda Bulunma
 
@@ -417,44 +542,16 @@ git commit -m "feat: add amazing feature"
 git push origin feature/amazing-feature
 ```
 
-## 📋 Yol Haritası
+## 📅 Yol Haritası
 
 - [ ] 🌍 Web UI desteği
-- [ ] 🔌 VSCode eklentisi
-- [ ] 🤖 GitHub Copilot benzeri otomatik tamamlama
-- [ ] 📊 Kod metrikleri ve analiz raporları
-- [ ] 🔄 Git entegrasyonu (otomatik commit mesajları)
-- [ ] 🌐 Uzak Ollama sunucu desteği
+- [ ] 🔌 VSCode/JetBrains eklentileri
+- [ ] 🤖 Otomatik kod tamamlama
+- [ ] 📊 Kod metrikleri dashboard
+- [ ] 🔄 Git entegrasyonu
+- [ ] 🌐 Template marketplace
 - [ ] 📦 Plugin sistemi
-- [ ] 🎨 Özelleştirilebilir prompt şablonları
-
-## 🐛 Sorun Giderme
-
-### Ollama Bağlantı Hatası
-```bash
-# Ollama servisini kontrol et
-systemctl status ollama
-
-# Manuel başlat
-ollama serve
-
-# API'yi test et
-curl http://localhost:11434/api/tags
-```
-
-### Model Bulunamadı
-```bash
-# Mevcut modelleri listele
-ollama list
-
-# Önerilen modeli indir
-ollama pull codellama:13b-instruct
-```
-
-### Performans Sorunları
-- Daha küçük model kullanın: `codellama:7b`
-- Context derinliğini azaltın
-- Büyük dosyaları parçalayın
+- [ ] 🎨 Özelleştirilebilir AI promptları
 
 ## 📄 Lisans
 
@@ -464,20 +561,8 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 - [Ollama](https://ollama.ai/) - Yerel AI model desteği
 - [Cobra](https://github.com/spf13/cobra) - CLI framework
-- [Anthropic Claude](https://anthropic.com) - Bu aracın geliştirilmesinde kullanılan AI
-
-## 📞 İletişim
-
-- **GitHub Issues**: [Sorun Bildir](https://github.com/snowsoft/codeweaver/issues)
-- **Discussions**: [Tartışmalar](https://github.com/snowsoft/codeweaver/discussions)
- 
+- [Anthropic Claude](https://anthropic.com) - AI geliştirme desteği
 
 ---
 
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/snowsoft">Snowsoft</a>
-</p>
-
-<p align="center">
-  <a href="#-code-weaver-kod-dokuyucu">↑ Başa Dön</a>
-</p>
+Made with ❤️ by [Snowsoft](https://github.com/snowsoft)

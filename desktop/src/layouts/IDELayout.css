@@ -1,0 +1,136 @@
+/* src/layouts/IDELayout.css */
+.ide-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+}
+
+.ide-body {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Side Panel */
+.ide-side-panel {
+    position: fixed;
+    left: 60px;
+    top: 40px;
+    bottom: 25px; /* Status bar height */
+    background-color: var(--bg-secondary);
+    overflow: hidden;
+    z-index: 10;
+}
+
+/* Main Content */
+.ide-main-content {
+    position: fixed;
+    top: 40px;
+    right: 0;
+    background-color: var(--bg-primary);
+    overflow: hidden;
+    transition: left 0.3s ease, bottom 0.3s ease;
+}
+
+/* Bottom Panel */
+.ide-bottom-panel {
+    position: fixed;
+    left: 60px;
+    right: 0;
+    bottom: 25px; /* Status bar height */
+    background-color: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    overflow: hidden;
+    z-index: 15;
+}
+
+/* Resizers */
+.ide-resizer-vertical {
+    position: fixed;
+    top: 40px;
+    bottom: 25px;
+    width: 5px;
+    background-color: transparent;
+    cursor: ew-resize;
+    z-index: 20;
+    transition: background-color 0.2s;
+}
+
+.ide-resizer-vertical:hover,
+.ide-resizer-vertical:active {
+    background-color: var(--accent-bg);
+    transition-delay: 0.2s;
+}
+
+.ide-resizer-horizontal {
+    position: fixed;
+    right: 0;
+    height: 5px;
+    background-color: transparent;
+    cursor: ns-resize;
+    z-index: 20;
+    transition: background-color 0.2s;
+}
+
+.ide-resizer-horizontal:hover,
+.ide-resizer-horizontal:active {
+    background-color: var(--accent-bg);
+    transition-delay: 0.2s;
+}
+
+/* Status Bar */
+.ide-status-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 25px;
+    background-color: var(--status-bar-bg);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 12px;
+    color: var(--status-bar-text);
+    user-select: none;
+    z-index: 100;
+}
+
+.status-left,
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.status-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tema değişkenleri güncellemesi */
+:root {
+    --status-bar-bg: #007acc;
+    --status-bar-text: #ffffff;
+}
+
+[data-theme="dark"] {
+    --status-bar-bg: #007acc;
+    --status-bar-text: #ffffff;
+}
+
+[data-theme="light"] {
+    --status-bar-bg: #007acc;
+    --status-bar-text: #ffffff;
+}
