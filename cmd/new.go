@@ -49,7 +49,7 @@ func runNew(cmd *cobra.Command, args []string) error {
     }
     
     // Initialize Ollama client
-    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)
+    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
     
     // Prepare context
     var context string

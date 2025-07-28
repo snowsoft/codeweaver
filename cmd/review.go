@@ -59,7 +59,7 @@ func runReview(cmd *cobra.Command, args []string) error {
     language := utils.DetectLanguage(fileName)
     
     // Initialize Ollama client
-    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature)
+    client := ollama.NewClient(cfg.Ollama.APIURL, cfg.Ollama.Model, cfg.Ollama.Temperature, cfg.Ollama.Timeout)
     
     // Build prompt
     prompt := buildReviewPrompt(language, code, reviewTask)

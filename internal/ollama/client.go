@@ -42,13 +42,16 @@ type GenerateResponse struct {
 }
 
 // NewClient creates a new Ollama API client
-func NewClient(baseURL, model string, temperature float32) *Client {
+func NewClient(baseURL, model string, temperature float32, timeout time.Duration) *Client {
+    if timeout == 0 {
+        timeout = 120 * time.Second
+    }
     return &Client{
         baseURL:     strings.TrimRight(baseURL, "/"),
         model:       model,
         temperature: temperature,
         httpClient: &http.Client{
-            Timeout: 120 * time.Second,
+            Timeout: timeout,
         },
     }
 }
