@@ -1,7 +1,22 @@
 // src/components/FileExplorer/index.tsx
 import React, { useState, useEffect } from 'react';
+import { copyToClipboard } from '../../renderer/lib/utils';
 import { useTranslation } from 'react-i18next';
 import './FileExplorer.css';
+
+// Optional window api typing for non-electron environments
+declare global {
+    interface Window {
+        api?: {
+            file?: {
+                list: (dirPath: string) => Promise<{ success: boolean; files?: any[] }>;
+                create: (filePath: string, isDir?: boolean) => Promise<{ success: boolean }>;
+                delete: (filePath: string) => Promise<{ success: boolean }>;
+                rename: (oldPath: string, newPath: string) => Promise<{ success: boolean }>;
+            };
+        };
+    }
+}
 
 interface FileNode {
     name: string;
@@ -24,15 +39,33 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; path: string } | null>(null);
     const [isCreating, setIsCreating] = useState<{ type: 'file' | 'folder'; path: string } | null>(null);
     const [newItemName, setNewItemName] = useState('');
+    const [gitStatus, setGitStatus] = useState<Record<string, string>>({});
 
     const fetchFileTree = async () => {
         try {
+            if (!window.api?.file?.list) {
+                console.warn('File API not available');
+                return;
+            }
             const result = await window.api.file.list(rootPath);
             if (result.success && Array.isArray(result.files)) {
                 setFileTree(result.files);
             }
         } catch (err) {
             console.error('Error loading file tree:', err);
+        }
+    };
+
+    const fetchGitStatus = async () => {
+        try {
+            if (window.api?.gitStatus) {
+                const status = await window.api.gitStatus();
+                if (status && typeof status === 'object') {
+                    setGitStatus(status);
+                }
+            }
+        } catch (err) {
+            console.error('Error getting git status:', err);
         }
     };
 
@@ -79,6 +112,14 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         if (textExtensions.includes(ext || '')) return textIcon;
         if (imageExtensions.includes(ext || '')) return imageIcon;
         return defaultIcon;
+    };
+
+    const getStatusClass = (code: string) => {
+        if (!code) return '';
+        if (code.includes('A') || code.includes('??')) return 'added';
+        if (code.includes('M')) return 'modified';
+        if (code.includes('D')) return 'deleted';
+        return '';
     };
 
     // Klasör aç/kapa
@@ -134,8 +175,13 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         const fullPath = isCreating.path ? `${isCreating.path}/${newItemName}` : newItemName;
 
         try {
+            if (!window.api?.file?.create) {
+                console.warn('File API not available');
+                return;
+            }
             await window.api.file.create(fullPath, isCreating.type === 'folder');
             await fetchFileTree();
+            await fetchGitStatus();
         } catch (err) {
             console.error('Error creating item:', err);
         }
@@ -151,8 +197,13 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
 
     const handleDelete = async (path: string) => {
         try {
+            if (!window.api?.file?.delete) {
+                console.warn('File API not available');
+                return;
+            }
             await window.api.file.delete(path);
             await fetchFileTree();
+            await fetchGitStatus();
         } catch (err) {
             console.error('Error deleting:', err);
         }
@@ -165,23 +216,81 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         if (!newName || newName === name) return;
         const newPath = oldPath.replace(/[^/]*$/, newName);
         try {
+            if (!window.api?.file?.rename) {
+                console.warn('File API not available');
+                return;
+            }
             await window.api.file.rename(oldPath, newPath);
             await fetchFileTree();
+            await fetchGitStatus();
         } catch (err) {
             console.error('Error renaming:', err);
         }
     };
 
+    const handleRefresh = async () => {
+        await fetchFileTree();
+        setContextMenu(null);
+    };
+
+    const handleOpenInExplorer = async (path: string) => {
+        try {
+            if (!window.api?.shell?.openPath) {
+                console.warn('Shell API not available');
+                return;
+            }
+            await window.api.shell.openPath(path);
+        } catch (err) {
+            console.error('Error opening path:', err);
+        }
+        setContextMenu(null);
+    };
+
+    const handleCopyPath = async (path: string) => {
+        await copyToClipboard(path);
+        setContextMenu(null);
+    };
+
     // Dosya ağacı render
+    const extensionClassMap: Record<string, string> = {
+        js: 'ext-js',
+        jsx: 'ext-js',
+        ts: 'ext-ts',
+        tsx: 'ext-ts',
+        py: 'ext-py',
+        go: 'ext-go',
+        java: 'ext-java',
+        c: 'ext-c',
+        cpp: 'ext-cpp',
+        php: 'ext-php',
+        md: 'ext-md',
+        txt: 'ext-txt',
+        json: 'ext-json',
+        yml: 'ext-yaml',
+        yaml: 'ext-yaml',
+        jpg: 'ext-image',
+        jpeg: 'ext-image',
+        png: 'ext-image',
+        gif: 'ext-image',
+        svg: 'ext-image',
+        bmp: 'ext-image',
+    };
+
+    const getExtensionClass = (fileName: string) => {
+        const ext = fileName.split('.').pop()?.toLowerCase() || '';
+        return extensionClassMap[ext] || '';
+    };
+
     const renderTree = (nodes: FileNode[], level = 0) => {
         return nodes.map((node) => {
             const isExpanded = expandedFolders.has(node.path);
             const isSelected = selectedFile === node.path;
+            const extClass = node.type === 'file' ? getExtensionClass(node.name) : '';
 
             return (
                 <div key={node.path}>
                     <div
-                        className={`file-item ${isSelected ? 'selected' : ''}`}
+                        className={`file-item ${extClass} ${isSelected ? 'selected' : ''}`}
                         style={{ paddingLeft: `${level * 20 + 10}px` }}
                         onClick={() => handleFileClick(node)}
                         onContextMenu={(e) => handleContextMenu(e, node.path)}
@@ -212,6 +321,9 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                             </>
                         )}
                         <span className="file-name">{node.name}</span>
+                        {node.type === 'file' && gitStatus[node.path] && (
+                            <span className={`status-dot ${getStatusClass(gitStatus[node.path])}`}></span>
+                        )}
                     </div>
                     {node.type === 'directory' && isExpanded && node.children && (
                         <div>{renderTree(node.children, level + 1)}</div>
@@ -221,9 +333,10 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
         });
     };
 
-    // Dosya ağacını yükle
+    // Dosya ağacını ve git durumunu yükle
     useEffect(() => {
         fetchFileTree();
+        fetchGitStatus();
     }, [rootPath]);
 
     // Context menüyü kapat
@@ -316,6 +429,29 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, rootPath = '.
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg>
                         <span>{t('fileExplorer.delete', 'Delete')}</span>
+                    </div>
+                    <div className="context-menu-item" onClick={handleRefresh}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0114.71-3.39L23 10M1 14l4.29 4.29A9 9 0 0019.49 15"></path>
+                        </svg>
+                        <span>{t('fileExplorer.refresh', 'Refresh')}</span>
+                    </div>
+                    <div className="context-menu-item" onClick={() => handleOpenInExplorer(contextMenu.path)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M3 3h18v4H3z"></path>
+                            <path d="M3 9h18v12H3z"></path>
+                            <path d="M9 13h6v6H9z"></path>
+                        </svg>
+                        <span>{t('fileExplorer.openInExplorer', 'Open in Explorer')}</span>
+                    </div>
+                    <div className="context-menu-item" onClick={() => handleCopyPath(contextMenu.path)}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>{t('fileExplorer.copyPath', 'Copy Path')}</span>
                     </div>
                     <div className="context-menu-divider"></div>
                     <div className="context-menu-item" onClick={() => handleNewFile(contextMenu.path)}>

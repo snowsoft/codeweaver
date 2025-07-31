@@ -13,6 +13,7 @@ export interface IElectronAPI {
     },
     shell: {
         openExternal: (url: string) => Promise<void>
+        openPath: (filePath: string) => Promise<void>
     },
     on: (channel: string, callback: (...args: any[]) => void) => void,
     removeAllListeners: (channel: string) => void
