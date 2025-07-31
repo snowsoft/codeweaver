@@ -11,6 +11,7 @@ import {
     Terminal,
     Zap
 } from 'lucide-react';
+import WeaverCommands from '../../components/WeaverCommands';
 import './Dashboard.css';
 
 const Dashboard = () => {

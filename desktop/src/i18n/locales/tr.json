@@ -104,12 +104,24 @@
     "split": "Böl"
   },
   "weaver": {
+    "title": "Weaver Komutları",
     "commands": {
       "new": "Yeni Kod Oluştur",
       "refactor": "Kodu İyileştir",
       "document": "Dokümantasyon Ekle",
       "test": "Test Oluştur",
-      "review": "Kod İncelemesi"
+      "review": "Kod İncelemesi",
+      "healProject": "Proje İyileştirme",
+      "template": "Şablon Yönetimi"
+    },
+    "descriptions": {
+      "new": "Sıfırdan yeni kod dosyaları oluşturur",
+      "refactor": "Mevcut kodu modernize eder ve iyileştirir",
+      "document": "Kod dosyalarına otomatik dokümantasyon ekler",
+      "test": "Kod için otomatik test dosyaları oluşturur",
+      "review": "Güvenlik, performans ve kalite açısından kod analizi yapar",
+      "healProject": "Tüm kod tabanını analiz ederek sorunları tespit eder",
+      "template": "Hazır proje şablonları ile çalışır"
     }
   }
 }
